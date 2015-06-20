@@ -17,7 +17,7 @@ UE4.sln
 UE4.suo
 UE4.*.suo
 
-GameName/Binaries/
-GameName/DerivedDataCache/
-GameName/Intermediate/
-GameName/Saved/
+Game/Binaries/
+Game/DerivedDataCache/
+Game/Intermediate/
+Game/Saved/
