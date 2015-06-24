@@ -1,23 +1,38 @@
-Engine/Binaries/
-Engine/DerivedDataCache/
-Engine/Intermediate/
-Engine/Plugins/*/*/Binaries/
-Engine/Plugins/*/*/Intermediate/
-Engine/Programs/UnrealHeaderTool/
-Engine/Programs/UnrealPak/
-Engine/Saved/
-Engine/Shaders/Binaries/
-Engine/Source/*/*/*/obj/
-Engine/Source/*/*/obj/
-Engine/Source/*/obj/
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-UE4.opensdf
-UE4.sdf
-UE4.sln
-UE4.suo
-UE4.*.suo
+# Precompiled Headers
+*.gch
+*.pch3
 
-Game/Binaries/
-Game/DerivedDataCache/
-Game/Intermediate/
-Game/Saved/
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+Intermediate
+Binaries
+Saved
+.apdisk
