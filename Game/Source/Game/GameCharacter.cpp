@@ -17,7 +17,7 @@ AGameCharacter::AGameCharacter()
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
 	// Configure character movement
@@ -35,14 +35,22 @@ AGameCharacter::AGameCharacter()
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->AttachTo(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
-	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	FollowCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	//Setting player to FPS on start
+	bIsFPS = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // Input
+
+void AGameCharacter::BeginPlay()
+{
+	ToggleView();
+}
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
@@ -65,6 +73,9 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 	// handle touch devices
 	InputComponent->BindTouch(IE_Pressed, this, &AGameCharacter::TouchStarted);
 	InputComponent->BindTouch(IE_Released, this, &AGameCharacter::TouchStopped);
+
+	//Toggle Player View
+	InputComponent->BindAction("ViewToggle", IE_Pressed, this, &AGameCharacter::ToggleView);
 }
 
 
@@ -124,4 +135,23 @@ void AGameCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AGameCharacter::ToggleView()
+{
+	if (bIsFPS)
+	{
+		//Setting Camera Boom shit
+		CameraBoom->TargetArmLength = 300.0f;
+		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		bIsFPS = false;
+	}
+	else
+	{
+		//Setting Camera Boom shit
+		CameraBoom->TargetArmLength = 0.0f;
+		CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 60.0f));
+		bIsFPS = true;
+	}
+
 }

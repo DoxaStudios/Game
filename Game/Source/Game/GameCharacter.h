@@ -26,6 +26,17 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 
+	//Toggle View Function that is public
+	void ToggleView();
+
+	//Begin play
+	UFUNCTION()
+	void BeginPlay() override;
+
+	//Is FPS boolean
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	bool bIsFPS;
+
 protected:
 
 	/** Called for forwards/backward input */
