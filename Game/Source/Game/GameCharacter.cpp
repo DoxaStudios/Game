@@ -40,9 +40,10 @@ AGameCharacter::AGameCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
-	//Setting player to FPS on start
+	//Player Variables
 	bIsFPS = false;
 	bIsSprinting = false;
+	bIsInventoryOpen = false;
 
 	WalkSpeed = 300.0f;
 	RunSpeed = 450.0f;
@@ -65,20 +66,30 @@ void AGameCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//Stamina counter
-		if (bIsSprinting)
+	if (bIsSprinting)
+	{
+		Stamina -= DeltaTime;
+	}
+	else
+	{
+		if (Stamina < 100.0f)
 		{
-			Stamina -= DeltaTime;
+			Stamina += (DeltaTime * 0.5f);
 		}
-		else
-		{
-			if (Stamina < 100.0f)
-			{
-				Stamina += (DeltaTime * 0.5f);
-			}
-		}
+	}
 	
 	//View Stamina on Screen
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::SanitizeFloat(Stamina));
+
+	if (bIsInventoryOpen)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "Inventory is Open");
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Inventory is Closed");
+	}
+
 }
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -109,6 +120,9 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 	//Sprinting
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &AGameCharacter::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &AGameCharacter::Walking);
+
+	//Inventory
+	InputComponent->BindAction("Inventory", IE_Pressed, this, &AGameCharacter::InventoryOpenClose);
 }
 
 
@@ -207,4 +221,16 @@ void AGameCharacter::Walking()
 {
 	bIsSprinting = false;
 	CharacterMovement->MaxWalkSpeed = WalkSpeed;
+}
+
+void AGameCharacter::InventoryOpenClose()
+{
+	if (bIsInventoryOpen)
+	{
+		bIsInventoryOpen = false;
+	}
+	else
+	{
+		bIsInventoryOpen = true;
+	}
 }

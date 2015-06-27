@@ -31,7 +31,6 @@ public:
 
 	//Sprinting Function
 	void Sprint();
-
 	void Walking();
 
 	//Begin play
@@ -56,6 +55,14 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float Stamina;
+
+
+	/*Inventory Data Structs and Variables*/
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	bool bIsInventoryOpen;
+
+	/*Inventory Functions*/
+	void InventoryOpenClose();
 
 
 protected:
