@@ -42,6 +42,14 @@ AGameCharacter::AGameCharacter()
 
 	//Setting player to FPS on start
 	bIsFPS = false;
+	bIsSprinting = false;
+
+	WalkSpeed = 300.0f;
+	RunSpeed = 450.0f;
+
+	Stamina = 100.0f;
+
+	CharacterMovement->MaxWalkSpeed = WalkSpeed;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -50,6 +58,27 @@ AGameCharacter::AGameCharacter()
 void AGameCharacter::BeginPlay()
 {
 	ToggleView();
+}
+
+void AGameCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	//Stamina counter
+		if (bIsSprinting)
+		{
+			Stamina -= DeltaTime;
+		}
+		else
+		{
+			if (Stamina < 100.0f)
+			{
+				Stamina += (DeltaTime * 0.5f);
+			}
+		}
+	
+	//View Stamina on Screen
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::SanitizeFloat(Stamina));
 }
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -76,6 +105,10 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 
 	//Toggle Player View
 	InputComponent->BindAction("ViewToggle", IE_Pressed, this, &AGameCharacter::ToggleView);
+
+	//Sprinting
+	InputComponent->BindAction("Sprint", IE_Pressed, this, &AGameCharacter::Sprint);
+	InputComponent->BindAction("Sprint", IE_Released, this, &AGameCharacter::Walking);
 }
 
 
@@ -141,17 +174,37 @@ void AGameCharacter::ToggleView()
 {
 	if (bIsFPS)
 	{
-		//Setting Camera Boom shit
+		//Setting Camera Boom
 		CameraBoom->TargetArmLength = 300.0f;
 		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 		bIsFPS = false;
 	}
 	else
 	{
-		//Setting Camera Boom shit
+		//Setting Camera Boom
 		CameraBoom->TargetArmLength = 0.0f;
 		CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 60.0f));
 		bIsFPS = true;
 	}
 
+}
+
+void AGameCharacter::Sprint()
+{
+	if (Stamina == 0.0f)
+	{
+		AGameCharacter::Walking();
+	}
+	else
+	{
+		bIsSprinting = true;
+		CharacterMovement->MaxWalkSpeed = RunSpeed;
+	}
+
+}
+
+void AGameCharacter::Walking()
+{
+	bIsSprinting = false;
+	CharacterMovement->MaxWalkSpeed = WalkSpeed;
 }

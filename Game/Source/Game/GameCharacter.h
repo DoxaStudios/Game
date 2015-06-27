@@ -29,13 +29,34 @@ public:
 	//Toggle View Function that is public
 	void ToggleView();
 
+	//Sprinting Function
+	void Sprint();
+
+	void Walking();
+
 	//Begin play
 	UFUNCTION()
 	void BeginPlay() override;
 
+	UFUNCTION()
+	void Tick(float DeltaTime) override;
+
 	//Is FPS boolean
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	bool bIsFPS;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	float WalkSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	float RunSpeed;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	bool bIsSprinting;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	float Stamina;
+
 
 protected:
 
