@@ -50,6 +50,8 @@ AGameCharacter::AGameCharacter()
 
 	Stamina = 100.0f;
 
+	CurrentSpeed = WalkSpeed;
+
 	CharacterMovement->MaxWalkSpeed = WalkSpeed;
 }
 
@@ -69,6 +71,16 @@ void AGameCharacter::Tick(float DeltaTime)
 	if (bIsSprinting)
 	{
 		Stamina -= DeltaTime;
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::SanitizeFloat(CurrentSpeed));
+		if (CurrentSpeed < RunSpeed)
+		{
+			CurrentSpeed += (DeltaTime * 15);
+		}
+		else
+		{
+			CurrentSpeed = RunSpeed;
+		}
+		CharacterMovement->MaxWalkSpeed = CurrentSpeed;
 	}
 	else
 	{
@@ -212,7 +224,7 @@ void AGameCharacter::Sprint()
 	else
 	{
 		bIsSprinting = true;
-		CharacterMovement->MaxWalkSpeed = RunSpeed;
+		CharacterMovement->MaxWalkSpeed = CurrentSpeed;
 	}
 
 }
@@ -221,6 +233,7 @@ void AGameCharacter::Walking()
 {
 	bIsSprinting = false;
 	CharacterMovement->MaxWalkSpeed = WalkSpeed;
+	CurrentSpeed = WalkSpeed;
 }
 
 void AGameCharacter::InventoryOpenClose()
