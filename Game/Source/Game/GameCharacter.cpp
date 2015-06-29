@@ -52,9 +52,18 @@ AGameCharacter::AGameCharacter()
 	SprintLevel = 0;
 	MaxSprintLevel = 10;
 
+	Health = 700.0f;
+	MaxHealth = 1000.0f;
+
+	Hunger = 500.0f;
+	MaxHunger = 100.0f;
+
+	Thirst = 500.0f;
+	MaxThirst = 1000.0f;
+
 	CurrentSpeed = WalkSpeed;
 
-	CharacterMovement->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -68,6 +77,9 @@ void AGameCharacter::BeginPlay()
 void AGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	HealthFunc(DeltaTime);
+
 	if (bIsSprinting)
 	{
 		Stamina -= DeltaTime;
@@ -80,7 +92,7 @@ void AGameCharacter::Tick(float DeltaTime)
 		{
 			CurrentSpeed = RunSpeed;
 		}
-		CharacterMovement->MaxWalkSpeed = CurrentSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = CurrentSpeed;
 	}
 	else
 	{
@@ -101,6 +113,8 @@ void AGameCharacter::Tick(float DeltaTime)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Inventory is Closed");
 	}
+
+
 
 }
 
@@ -135,6 +149,10 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 
 	//Inventory
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &AGameCharacter::InventoryOpenClose);
+
+	//Debug Key
+	InputComponent->BindAction("DebugKey", IE_Pressed, this, &AGameCharacter::Debug);
+
 }
 
 
@@ -224,7 +242,7 @@ void AGameCharacter::Sprint()
 	else
 	{
 		bIsSprinting = true;
-		CharacterMovement->MaxWalkSpeed = CurrentSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = CurrentSpeed;
 	}
 
 }
@@ -232,7 +250,7 @@ void AGameCharacter::Sprint()
 void AGameCharacter::Walking()
 {
 	bIsSprinting = false;
-	CharacterMovement->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	CurrentSpeed = WalkSpeed;
 }
 
@@ -251,4 +269,36 @@ void AGameCharacter::InventoryOpenClose()
 void AGameCharacter::SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed)
 {
 	MaxWalkSpeed += SprintLevel * 5.0f;
+}
+
+void AGameCharacter::Debug()
+{
+	Thirst = 5.0f;
+	Hunger = 5.0f;
+	Health = 5.0f;
+}
+
+void AGameCharacter::HealthFunc(float DeltaTime)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::SanitizeFloat(Health));
+
+	if (Health > 0)
+	{
+		if (Thirst >= (MaxThirst * 0.3f) && Hunger >= (MaxHunger * 0.3f))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "Health Gain");
+			Health += (DeltaTime * 3);
+		}
+		else if (Thirst <= (MaxThirst * 0.05f) && Hunger <= (MaxHunger * 0.05f))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "Health Loss");
+			Health -= (DeltaTime * 3);
+		}
+	}
+
+	if (Health <= 1)
+	{
+		Health = 0;
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "You is dead");
+	}
 }

@@ -82,6 +82,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
 	float MaxHunger;
 
+	void HealthFunc(float DeltaTime);
+
 	//Level System
 	void SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed);
 
@@ -89,6 +91,8 @@ public:
 	int32 SprintLevel;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
 	int32 MaxSprintLevel;
+
+	void Debug();
 
 
 protected:
