@@ -49,6 +49,8 @@ AGameCharacter::AGameCharacter()
 	RunSpeed = 450.0f;
 
 	Stamina = 100.0f;
+	SprintLevel = 0;
+	MaxSprintLevel = 10;
 
 	CurrentSpeed = WalkSpeed;
 
@@ -66,8 +68,6 @@ void AGameCharacter::BeginPlay()
 void AGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//Stamina counter
 	if (bIsSprinting)
 	{
 		Stamina -= DeltaTime;
@@ -246,4 +246,9 @@ void AGameCharacter::InventoryOpenClose()
 	{
 		bIsInventoryOpen = true;
 	}
+}
+
+void AGameCharacter::SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed)
+{
+	MaxWalkSpeed += SprintLevel * 5.0f;
 }

@@ -67,6 +67,29 @@ public:
 	/*Inventory Functions*/
 	void InventoryOpenClose();
 
+	//Life System
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	float Health;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	float Thirst;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	float Hunger;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	float MaxHealth;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	float MaxThirst;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	float MaxHunger;
+
+	//Level System
+	void SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	int32 SprintLevel;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
+	int32 MaxSprintLevel;
+
 
 protected:
 
