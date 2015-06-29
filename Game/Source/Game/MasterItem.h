@@ -37,7 +37,7 @@ class GAME_API AMasterItem : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	AMasterItem();
+	AMasterItem(const FObjectInitializer& ObjectInitializer);
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
