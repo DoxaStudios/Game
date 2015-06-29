@@ -282,7 +282,7 @@ void AWeapon::ProcessInstantHit(const FHitResult &Impact, const FVector &Origin,
 		const FVector EndPoint = Impact.GetActor() ? Impact.ImpactPoint : EndTrace;
 		DrawDebugLine(this->GetWorld(), Origin, Impact.TraceEnd, FColor::Black, true, 10000, 10.f);
 
-		ABornImmortalCharacter *Player = Cast<ABornImmortalCharacter>(Impact.GetActor());
+		AGameCharacter *Player = Cast<AGameCharacter>(Impact.GetActor());
 		if (Player)
 		{
 			Player->Health -= 10;

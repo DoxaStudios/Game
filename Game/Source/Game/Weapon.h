@@ -103,7 +103,7 @@ struct FWeaponConfig
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Config)
 		/** Use of Priority Makes the picking up of weapon and equiping them
-		* automatically sort them in BornImmortalCharacter (SORTING WIP)
+		* automatically sort them in GameCharacter (SORTING WIP)
 		*/
 		int32 Priority;
 };
@@ -210,8 +210,8 @@ public:
 
 
 	/** SetOwningPawn Function
-	* Retrieves owner for this weapon
-	* @param NewOwner  Only allows BornImmortalCharacter Class type
+	* Retrieves owner for this weapon for the MyPawn variable
+	* @param NewOwner  Only allows AGameCharacter Class type
 	*/
 	void SetOwningPawn(AGameCharacter *NewOwner);
 
