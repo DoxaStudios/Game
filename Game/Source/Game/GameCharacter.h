@@ -33,10 +33,6 @@ public:
 	void Sprint();
 	void Walking();
 
-	//Begin play
-	UFUNCTION()
-	void BeginPlay() override;
-
 	UFUNCTION()
 	void Tick(float DeltaTime) override;
 
@@ -59,6 +55,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float Stamina;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	float MaxStamina;
+
 
 	/*Inventory Data Structs and Variables*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
@@ -68,11 +67,11 @@ public:
 	void InventoryOpenClose();
 
 	//Life System
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
 	float Health;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
 	float Thirst;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
 	float Hunger;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
@@ -93,6 +92,10 @@ public:
 	int32 MaxSprintLevel;
 
 	void Debug();
+
+
+	void TacLookOn();
+	void TacLookOff();
 
 
 protected:

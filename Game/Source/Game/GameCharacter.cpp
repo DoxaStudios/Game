@@ -49,6 +49,7 @@ AGameCharacter::AGameCharacter()
 	RunSpeed = 450.0f;
 
 	Stamina = 100.0f;
+	MaxStamina = 100.0f;
 	SprintLevel = 0;
 	MaxSprintLevel = 10;
 
@@ -64,15 +65,11 @@ AGameCharacter::AGameCharacter()
 	CurrentSpeed = WalkSpeed;
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	ToggleView();
 }
 
 //////////////////////////////////////////////////////////////////////////
 // Input
-
-void AGameCharacter::BeginPlay()
-{
-	ToggleView();
-}
 
 void AGameCharacter::Tick(float DeltaTime)
 {
@@ -96,7 +93,7 @@ void AGameCharacter::Tick(float DeltaTime)
 	}
 	else
 	{
-		if (Stamina < 100.0f)
+		if (Stamina < MaxStamina)
 		{
 			Stamina += (DeltaTime * 0.5f);
 		}
@@ -107,11 +104,11 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	if (bIsInventoryOpen)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "Inventory is Open");
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "Inventory is Open");
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Inventory is Closed");
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Inventory is Closed");
 	}
 
 
@@ -152,6 +149,9 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 
 	//Debug Key
 	InputComponent->BindAction("DebugKey", IE_Pressed, this, &AGameCharacter::Debug);
+
+	InputComponent->BindAction("TacLook", IE_Pressed, this, &AGameCharacter::TacLookOn);
+	InputComponent->BindAction("TacLook", IE_Released, this, &AGameCharacter::TacLookOff);
 
 }
 
@@ -235,6 +235,10 @@ void AGameCharacter::ToggleView()
 
 void AGameCharacter::Sprint()
 {
+	if (Stamina == MaxStamina)
+	{
+		CurrentSpeed += 40;
+	}
 	if (Stamina == 0.0f)
 	{
 		AGameCharacter::Walking();
@@ -273,25 +277,23 @@ void AGameCharacter::SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed)
 
 void AGameCharacter::Debug()
 {
-	Thirst = 5.0f;
-	Hunger = 5.0f;
-	Health = 5.0f;
+	Thirst += 100;
 }
 
 void AGameCharacter::HealthFunc(float DeltaTime)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::SanitizeFloat(Health));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::SanitizeFloat(Health));
 
-	if (Health > 0)
+	if (Health > 0 && Health < 1000)
 	{
-		if (Thirst >= (MaxThirst * 0.3f) && Hunger >= (MaxHunger * 0.3f))
+		if (Thirst >= (MaxThirst * 0.7f) && Hunger >= (MaxHunger * 0.7f))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "Health Gain");
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "Health Gain");
 			Health += (DeltaTime * 3);
 		}
 		else if (Thirst <= (MaxThirst * 0.05f) && Hunger <= (MaxHunger * 0.05f))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "Health Loss");
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "Health Loss");
 			Health -= (DeltaTime * 3);
 		}
 	}
@@ -299,6 +301,19 @@ void AGameCharacter::HealthFunc(float DeltaTime)
 	if (Health <= 1)
 	{
 		Health = 0;
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "You is dead");
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "You is dead");
 	}
+}
+
+void AGameCharacter::TacLookOn()
+{
+	CameraBoom->bUsePawnControlRotation = true;
+	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	bUseControllerRotationYaw = false;
+}
+void AGameCharacter::TacLookOff()
+{
+	CameraBoom->bUsePawnControlRotation = true;
+	FollowCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
+	bUseControllerRotationYaw = true;
 }

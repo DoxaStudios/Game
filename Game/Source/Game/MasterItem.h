@@ -5,27 +5,27 @@
 #include "GameFramework/Actor.h"
 #include "MasterItem.generated.h"
 
-USTRUCT()
+USTRUCT(blueprintable)
 struct FItemDataStruct
 {
 	GENERATED_USTRUCT_BODY()
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	FString Name;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	int32 ItemID;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	UTexture2D *Icon;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	FString Description;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	float Weight;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	bool bIsConsumable;
 
 };
