@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Game.h"
+#include "GameCharacter.h"
 #include "MasterItem.h"
 
 
@@ -20,10 +21,4 @@ void AMasterItem::BeginPlay()
 	
 }
 
-// Called every frame
-void AMasterItem::Tick( float DeltaTime )
-{
-	Super::Tick( DeltaTime );
-
-}
 

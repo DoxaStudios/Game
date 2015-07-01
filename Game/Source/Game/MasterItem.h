@@ -10,14 +10,14 @@ struct FItemDataStruct
 {
 	GENERATED_USTRUCT_BODY()
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	FString Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	int32 ItemID;
+	UTexture2D *Icon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	UTexture2D *Icon;
+	int32 ItemID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	FString Description;
@@ -26,11 +26,26 @@ struct FItemDataStruct
 	float Weight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	bool bIsTool;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	bool bIsWeapon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	bool bIsConsumable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float AddHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float AddHunger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float AddThirst;
 
 };
 
-UCLASS()
+UCLASS(Blueprintable)
 class GAME_API AMasterItem : public AActor
 {
 	GENERATED_BODY()
@@ -42,11 +57,9 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
-	FItemDataStruct ItemStruct;
+	FItemDataStruct ItemInfo;
 
 protected:
 
