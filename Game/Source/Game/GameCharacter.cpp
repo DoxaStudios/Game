@@ -50,6 +50,7 @@ AGameCharacter::AGameCharacter()
 
 	Stamina = 100.0f;
 	MaxStamina = 100.0f;
+
 	SprintLevel = 0;
 	MaxSprintLevel = 10;
 
@@ -77,42 +78,9 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	HealthFunc(DeltaTime);
 
-	if (bIsSprinting)
-	{
-		Stamina -= DeltaTime;
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::SanitizeFloat(CurrentSpeed));
-		if (CurrentSpeed < RunSpeed)
-		{
-			CurrentSpeed += (DeltaTime * 15);
-		}
-		else
-		{
-			CurrentSpeed = RunSpeed;
-		}
-		GetCharacterMovement()->MaxWalkSpeed = CurrentSpeed;
-	}
-	else
-	{
-		if (Stamina < MaxStamina)
-		{
-			Stamina += (DeltaTime * 0.5f);
-		}
-	}
-	
-	//View Stamina on Screen
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::SanitizeFloat(Stamina));
+	SprintFunc(DeltaTime);
 
-	if (bIsInventoryOpen)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "Inventory is Open");
-	}
-	else
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Inventory is Closed");
-	}
-
-
-
+	InventoryFunc(DeltaTime);
 }
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -241,7 +209,7 @@ void AGameCharacter::Sprint()
 	}
 	if (Stamina == 0.0f)
 	{
-		AGameCharacter::Walking();
+		Walking();
 	}
 	else
 	{
@@ -311,9 +279,47 @@ void AGameCharacter::TacLookOn()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 	bUseControllerRotationYaw = false;
 }
+
 void AGameCharacter::TacLookOff()
 {
 	CameraBoom->bUsePawnControlRotation = true;
 	FollowCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
 	bUseControllerRotationYaw = true;
+}
+
+void AGameCharacter::SprintFunc(float DeltaTime)
+{
+	if (bIsSprinting)
+	{
+		Stamina -= (DeltaTime * 5);
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::SanitizeFloat(CurrentSpeed));
+		if (CurrentSpeed < RunSpeed)
+		{
+			CurrentSpeed += (DeltaTime * 15);
+		}
+		else
+		{
+			CurrentSpeed = RunSpeed;
+		}
+		GetCharacterMovement()->MaxWalkSpeed = CurrentSpeed;
+	}
+	else
+	{
+		if (Stamina < MaxStamina)
+		{
+			Stamina += (DeltaTime * 2);
+		}
+	}
+}
+
+void AGameCharacter::InventoryFunc(float DeltaTime)
+{
+	if (bIsInventoryOpen)
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "Inventory is Open");
+	}
+	else
+	{
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Inventory is Closed");
+	}
 }

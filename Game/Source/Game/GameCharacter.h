@@ -83,6 +83,8 @@ public:
 	float MaxHunger;
 
 	void HealthFunc(float DeltaTime);
+	void SprintFunc(float DeltaTime);
+	void InventoryFunc(float DeltaTime);
 
 	//Level System
 	void SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed);
