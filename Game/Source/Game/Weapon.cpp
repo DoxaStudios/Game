@@ -14,6 +14,8 @@ AWeapon::AWeapon(const FObjectInitializer& ObjectInitializer)
 
 	Mesh = ObjectInitializer.CreateDefaultSubobject<USkeletalMeshComponent>(this, "Mesh");
 	Mesh->AttachTo(RootComponent);
+
+	ItemInfo.bIsWeapon = true;
 }
 
 void AWeapon::Fire()

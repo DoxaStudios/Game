@@ -3,6 +3,7 @@
 #pragma once
 
 #include "MasterItem.h"
+#include "WeaponProjectile.h"
 #include "Weapon.generated.h"
 
 /**
@@ -148,9 +149,9 @@ public:
 	AWeapon(const FObjectInitializer& ObjectInitializer);
 
 
-	//UPROPERTY(EditDefaultsOnly, Category = Config)
+	UPROPERTY(EditDefaultsOnly, Category = Config)
 	/** Weapon Projectile(Like rocket, grenade, etc) */
-	//TSubclassOf<AWeaponProjectile> WeaponProj;
+	TSubclassOf<AWeaponProjectile> WeaponProj;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Config)
