@@ -2,7 +2,12 @@
 #pragma once
 
 #include "GameFramework/Character.h"
+#include "MasterItem.h"
 #include "GameCharacter.generated.h"
+
+#define TRACE_INVENTORY
+
+class MasterItem;
 
 UCLASS(config=Game)
 class AGameCharacter : public ACharacter
@@ -64,8 +69,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	bool bIsInventoryOpen;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	TArray<FItemDataStruct> InventoryItems;
+	
+
 	/*Inventory Functions*/
 	void InventoryOpenClose();
+	void Interact();
+	void Pickup();
 
 	//Life System
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
@@ -84,7 +95,6 @@ public:
 
 	void HealthFunc(float DeltaTime);
 	void SprintFunc(float DeltaTime);
-	void InventoryFunc(float DeltaTime);
 
 	//Level System
 	void SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed);

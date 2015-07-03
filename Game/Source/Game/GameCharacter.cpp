@@ -58,7 +58,7 @@ AGameCharacter::AGameCharacter()
 	MaxHealth = 1000.0f;
 
 	Hunger = 500.0f;
-	MaxHunger = 100.0f;
+	MaxHunger = 1000.0f;
 
 	Thirst = 500.0f;
 	MaxThirst = 1000.0f;
@@ -79,8 +79,6 @@ void AGameCharacter::Tick(float DeltaTime)
 	HealthFunc(DeltaTime);
 
 	SprintFunc(DeltaTime);
-
-	InventoryFunc(DeltaTime);
 }
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -120,6 +118,8 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 
 	InputComponent->BindAction("TacLook", IE_Pressed, this, &AGameCharacter::TacLookOn);
 	InputComponent->BindAction("TacLook", IE_Released, this, &AGameCharacter::TacLookOff);
+
+	InputComponent->BindAction("Interact", IE_Pressed, this, &AGameCharacter::Interact);
 
 }
 
@@ -271,6 +271,15 @@ void AGameCharacter::HealthFunc(float DeltaTime)
 		Health = 0;
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, "You is dead");
 	}
+
+	if (Hunger > MaxHunger)
+	{
+		Hunger = MaxHunger;
+	}
+	if (Thirst > MaxThirst)
+	{
+		Thirst = MaxThirst;
+	}
 }
 
 void AGameCharacter::TacLookOn()
@@ -312,14 +321,14 @@ void AGameCharacter::SprintFunc(float DeltaTime)
 	}
 }
 
-void AGameCharacter::InventoryFunc(float DeltaTime)
+void AGameCharacter::Interact()
 {
-	if (bIsInventoryOpen)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, "Inventory is Open");
-	}
-	else
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Inventory is Closed");
-	}
+	Pickup();
+
+}
+
+void AGameCharacter::Pickup()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red,"Pickup");
+
 }

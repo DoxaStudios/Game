@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "GameCharacter.h"
 #include "MasterItem.generated.h"
 
 USTRUCT(blueprintable)
@@ -26,13 +27,16 @@ struct FItemDataStruct
 	float Weight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	bool bIsTool;
+	bool bCanBeHeld;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	bool bIsWeapon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	bool bIsConsumable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	bool bIsWearable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	float AddHealth;
