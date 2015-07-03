@@ -67,6 +67,9 @@ AGameCharacter::AGameCharacter()
 
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	ToggleView();
+
+	ItemSelected = 0;
+	CurrentId = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -110,8 +113,6 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &AGameCharacter::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &AGameCharacter::Walking);
 
-	//Inventory
-	InputComponent->BindAction("Inventory", IE_Pressed, this, &AGameCharacter::InventoryOpenClose);
 
 	//Debug Key
 	InputComponent->BindAction("DebugKey", IE_Pressed, this, &AGameCharacter::Debug);
@@ -190,6 +191,8 @@ void AGameCharacter::ToggleView()
 		CameraBoom->TargetArmLength = 300.0f;
 		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 		bIsFPS = false;
+		GetMesh()->bOwnerNoSee = false;
+		GetMesh()->MarkRenderStateDirty();
 	}
 	else
 	{
@@ -197,6 +200,8 @@ void AGameCharacter::ToggleView()
 		CameraBoom->TargetArmLength = 0.0f;
 		CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 60.0f));
 		bIsFPS = true;
+		GetMesh()->bOwnerNoSee = true;
+		GetMesh()->MarkRenderStateDirty();
 	}
 
 }
@@ -210,6 +215,11 @@ void AGameCharacter::Sprint()
 	if (Stamina == 0.0f)
 	{
 		Walking();
+	}
+
+	if (Stamina < 0)
+	{
+		Stamina = 0;
 	}
 	else
 	{
@@ -226,16 +236,31 @@ void AGameCharacter::Walking()
 	CurrentSpeed = WalkSpeed;
 }
 
-void AGameCharacter::InventoryOpenClose()
+bool AGameCharacter::EnableDisableKeys()
 {
+	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
+
 	if (bIsInventoryOpen)
 	{
 		bIsInventoryOpen = false;
+		MyController->bShowMouseCursor = false;
+		MyController->bEnableClickEvents = false;
+		MyController->bEnableMouseOverEvents = false;
+		MyController->SetIgnoreLookInput(false);
+		MyController->SetInputMode(FInputModeGameOnly());
+		GetFocus();
 	}
 	else
 	{
 		bIsInventoryOpen = true;
+		MyController->bShowMouseCursor = true;
+		MyController->bEnableClickEvents = true;
+		MyController->bEnableMouseOverEvents = true;
+		MyController->SetIgnoreLookInput(true);
+		MyController->SetInputMode(FInputModeGameAndUI());
 	}
+
+	return bIsInventoryOpen;
 }
 
 void AGameCharacter::SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed)
@@ -329,6 +354,66 @@ void AGameCharacter::Interact()
 
 void AGameCharacter::Pickup()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red,"Pickup");
+	PickupItemLineTrace();
+
+}
+
+FHitResult AGameCharacter::PickupTrace(const FVector &TraceFrom, const FVector &TraceTo) const
+{
+	static FName PickupTag = FName(TEXT("PickupTrace"));
+
+	FCollisionQueryParams TraceParams(PickupTag, true, Instigator);
+	TraceParams.bTraceAsyncScene = true;
+	TraceParams.bReturnPhysicalMaterial = true;
+	TraceParams.AddIgnoredActor(this);
+
+	FHitResult Hit(ForceInit);
+
+	GetWorld()->LineTraceSingle(Hit, TraceFrom, TraceTo, TRACE_INVENTORY, TraceParams);
+
+	return Hit;
+}
+
+void AGameCharacter::ProcessResults(const FHitResult &Impact)
+{
+	AMasterItem *Item = Cast<AMasterItem>(Impact.GetActor());
+
+	if (Item)
+	{
+		InventoryItems.Add(Item->ItemInfo);
+
+		//InventoryItems[InventoryItems.Find(Item->ItemInfo)] Item->ItemInfo.ItemId = 0;
+
+		CurrentId += 1;
+		Item->ItemInfo.ItemID = InventoryItems.Find(Item->ItemInfo);
+		Item->ItemInfo.ItemID = CurrentId;
+
+		if (Item->ItemInfo.bIsConsumable)
+		{
+			Item->Destroy();
+		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + Item->ItemInfo.Name);
+
+
+	}
+
+}
+
+void AGameCharacter::PickupItemLineTrace()
+{
+	FVector CameraLoc;
+	FRotator CameraRot;
+	GetActorEyesViewPoint(CameraLoc, CameraRot);
+	const FVector Dir = GetFollowCamera()->GetForwardVector();
+	const FVector StartTrace = CameraLoc;
+	const FVector EndTrace = StartTrace + Dir * 300;
+
+	const FHitResult Impact = PickupTrace(StartTrace, EndTrace);
+
+	DrawDebugLine(this->GetWorld(), StartTrace, EndTrace, FColor::Black, true, 10000, 10.f);
+
+
+	ProcessResults(Impact);
 
 }

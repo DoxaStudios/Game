@@ -5,9 +5,7 @@
 #include "MasterItem.h"
 #include "GameCharacter.generated.h"
 
-#define TRACE_INVENTORY
-
-class MasterItem;
+#define TRACE_INVENTORY ECC_GameTraceChannel2
 
 UCLASS(config=Game)
 class AGameCharacter : public ACharacter
@@ -70,11 +68,19 @@ public:
 	bool bIsInventoryOpen;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	FItemDataStruct InventoryItem;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	TArray<FItemDataStruct> InventoryItems;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	int32 ItemSelected;
 	
 
 	/*Inventory Functions*/
-	void InventoryOpenClose();
+	UFUNCTION(BlueprintCallable, Category = "Enable Disable Keys")
+	bool EnableDisableKeys();
+
 	void Interact();
 	void Pickup();
 
@@ -103,6 +109,9 @@ public:
 	int32 SprintLevel;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
 	int32 MaxSprintLevel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	int32 CurrentId;
 
 	void Debug();
 
@@ -137,10 +146,17 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	FHitResult PickupTrace(const FVector &TraceFrom, const FVector &TraceTo) const;
+
+	void ProcessResults(const FHitResult &Impact);
+
+	void PickupItemLineTrace();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End of APawn interface
+
 
 public:
 	/** Returns CameraBoom subobject **/
