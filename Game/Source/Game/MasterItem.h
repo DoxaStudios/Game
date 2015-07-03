@@ -3,7 +3,6 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
-#include "GameCharacter.h"
 #include "MasterItem.generated.h"
 
 USTRUCT(blueprintable)
