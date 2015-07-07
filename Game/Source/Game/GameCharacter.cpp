@@ -349,6 +349,7 @@ void AGameCharacter::SprintFunc(float DeltaTime)
 void AGameCharacter::Interact()
 {
 	Pickup();
+	Container();
 
 }
 
@@ -374,19 +375,36 @@ FHitResult AGameCharacter::PickupTrace(const FVector &TraceFrom, const FVector &
 	return Hit;
 }
 
+FHitResult AGameCharacter::ContainerTrace(const FVector &TraceFrom, const FVector &TraceTo) const
+{
+	static FName PickupTag = FName(TEXT("ContainerTrace"));
+
+	FCollisionQueryParams TraceParams(PickupTag, true, Instigator);
+	TraceParams.bTraceAsyncScene = true;
+	TraceParams.bReturnPhysicalMaterial = true;
+	TraceParams.AddIgnoredActor(this);
+
+	FHitResult Hit(ForceInit);
+
+	GetWorld()->LineTraceSingle(Hit, TraceFrom, TraceTo, TRACE_INVENTORY, TraceParams);
+
+	return Hit;
+}
+
 void AGameCharacter::ProcessResults(const FHitResult &Impact)
 {
 	AMasterItem *Item = Cast<AMasterItem>(Impact.GetActor());
+	AContainer *ContainerItem = Cast<AContainer>(Impact.GetActor());
+	//Container = ContainerItem;
 
 	if (Item)
 	{
+		Item->ItemInfo.ItemID += CurrentId;
 		InventoryItems.Add(Item->ItemInfo);
 
-		//InventoryItems[InventoryItems.Find(Item->ItemInfo)] Item->ItemInfo.ItemId = 0;
-
-		CurrentId += 1;
-		Item->ItemInfo.ItemID = InventoryItems.Find(Item->ItemInfo);
-		Item->ItemInfo.ItemID = CurrentId;
+		CurrentId += 0.1f;
+		//Item->ItemInfo.ItemID = InventoryItems.Find(Item->ItemInfo);
+		//Item->ItemInfo.ItemID = CurrentId;
 
 		if (Item->ItemInfo.bIsConsumable)
 		{
@@ -394,10 +412,12 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		}
 
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + Item->ItemInfo.Name);
-
-
 	}
-
+	else if (ContainerItem)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You opened a container");
+		OpenContainer();
+	}
 }
 
 void AGameCharacter::PickupItemLineTrace()
@@ -411,9 +431,14 @@ void AGameCharacter::PickupItemLineTrace()
 
 	const FHitResult Impact = PickupTrace(StartTrace, EndTrace);
 
-	DrawDebugLine(this->GetWorld(), StartTrace, EndTrace, FColor::Black, true, 10000, 10.f);
+	//DrawDebugLine(this->GetWorld(), StartTrace, EndTrace, FColor::Black, true, 10000, 10.f);
 
 
 	ProcessResults(Impact);
+
+}
+
+void AGameCharacter::Container()
+{
 
 }

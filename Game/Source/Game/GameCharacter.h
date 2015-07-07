@@ -3,6 +3,7 @@
 
 #include "GameFramework/Character.h"
 #include "MasterItem.h"
+#include "Container.h"
 #include "GameCharacter.generated.h"
 
 #define TRACE_INVENTORY ECC_GameTraceChannel2
@@ -25,6 +26,12 @@ public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
+	void OpenContainer();
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Container")
+	//AContainer *Container;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -83,6 +90,7 @@ public:
 
 	void Interact();
 	void Pickup();
+	void Container();
 
 	//Life System
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
@@ -111,7 +119,7 @@ public:
 	int32 MaxSprintLevel;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
-	int32 CurrentId;
+	float CurrentId;
 
 	void Debug();
 
@@ -147,6 +155,8 @@ protected:
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 	FHitResult PickupTrace(const FVector &TraceFrom, const FVector &TraceTo) const;
+
+	FHitResult ContainerTrace(const FVector &TraceFrom, const FVector &TraceTo) const;
 
 	void ProcessResults(const FHitResult &Impact);
 
