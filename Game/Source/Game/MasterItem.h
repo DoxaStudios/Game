@@ -38,6 +38,20 @@ struct FItemDataStruct
 	bool bIsWearable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		bool bIsShoes;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		bool bIsHeadWear;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		bool bIsShirt;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		bool bIsPants;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		bool bIsBackpack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	float AddHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")

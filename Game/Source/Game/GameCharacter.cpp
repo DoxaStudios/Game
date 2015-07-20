@@ -70,6 +70,9 @@ AGameCharacter::AGameCharacter()
 
 	ItemSelected = 0;
 	CurrentId = 0;
+
+	CurrentWeight = 0;
+	MaxWeight = 300.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -394,10 +397,63 @@ FHitResult AGameCharacter::ContainerTrace(const FVector &TraceFrom, const FVecto
 void AGameCharacter::ProcessResults(const FHitResult &Impact)
 {
 	AMasterItem *Item = Cast<AMasterItem>(Impact.GetActor());
+	AInventoryItems *InventoryItem = Cast<AInventoryItems>(Impact.GetActor());
 	AContainer *ContainerItem = Cast<AContainer>(Impact.GetActor());
-	//Container = ContainerItem;
+	SavedContainer = ContainerItem;
 
-	if (Item)
+
+	if (InventoryItem)
+	{
+
+		InventoryItem->ItemInfo.ItemID += CurrentId;
+		if (InventoryItem->ItemInfo.bIsShirt == true)
+		{
+			if (ShirtGear == NULL)
+			{
+				ShirtGear = InventoryItem;
+				ShirtGear->ItemInfo.Name = InventoryItem->ItemInfo.Name;
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Added Shirt");
+			}
+			else
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
+			}
+		}
+		else if (InventoryItem->ItemInfo.bIsPants == true)
+		{
+			if (PantsGear == NULL)
+			{
+				ShirtGear = InventoryItem;
+			}
+			else
+			{
+
+			}
+		}
+		else if (InventoryItem->ItemInfo.bIsBackpack == true)
+		{
+			if (Backpack == NULL)
+			{
+				ShirtGear = InventoryItem;
+			}
+			else
+			{
+
+			}
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
+		}
+		//InventoryItems.Add(InventoryItem->ItemInfo);
+		CurrentId += 0.1f;
+
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + InventoryItem->ItemInfo.Name);
+		InventoryItem->Destroy();
+
+		return;
+	}
+	else if (Item)
 	{
 		Item->ItemInfo.ItemID += CurrentId;
 		InventoryItems.Add(Item->ItemInfo);

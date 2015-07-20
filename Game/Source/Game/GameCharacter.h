@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "MasterItem.h"
 #include "Container.h"
+#include "InventoryItems.h"
 #include "GameCharacter.generated.h"
 
 #define TRACE_INVENTORY ECC_GameTraceChannel2
@@ -30,8 +31,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
 	void OpenContainer();
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Container")
-	//AContainer *Container;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Container")
+	AContainer *SavedContainer;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
@@ -81,6 +82,27 @@ public:
 	TArray<FItemDataStruct> InventoryItems;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		FItemDataStruct HeadGear;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AInventoryItems *ShirtGear;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AInventoryItems *ChestGear;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AInventoryItems *PantsGear;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		FItemDataStruct ShoesGear;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AInventoryItems *Backpack;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+	FItemDataStruct Hand;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
 	int32 ItemSelected;
 	
 
@@ -106,6 +128,12 @@ public:
 	float MaxThirst;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
 	float MaxHunger;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	float MaxWeight;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+	float CurrentWeight;
 
 	void HealthFunc(float DeltaTime);
 	void SprintFunc(float DeltaTime);
