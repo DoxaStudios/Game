@@ -78,6 +78,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 	FItemDataStruct ItemInfo;
 
+
 protected:
 
 

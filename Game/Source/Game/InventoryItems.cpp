@@ -8,5 +8,3 @@ AInventoryItems::AInventoryItems(const FObjectInitializer& ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
-
-

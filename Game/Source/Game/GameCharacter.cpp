@@ -85,6 +85,9 @@ void AGameCharacter::Tick(float DeltaTime)
 	HealthFunc(DeltaTime);
 
 	SprintFunc(DeltaTime);
+
+	//if (ShirtGear != NULL)
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Shirt Name: " + ShirtGear->ItemInfo.Name);
 }
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -404,14 +407,13 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 
 	if (InventoryItem)
 	{
-
 		InventoryItem->ItemInfo.ItemID += CurrentId;
 		if (InventoryItem->ItemInfo.bIsShirt == true)
 		{
 			if (ShirtGear == NULL)
 			{
 				ShirtGear = InventoryItem;
-				ShirtGear->ItemInfo.Name = InventoryItem->ItemInfo.Name;
+				//ShirtGear->ItemInfo.Name = InventoryItem->ItemInfo.Name;
 				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Added Shirt");
 			}
 			else
@@ -423,7 +425,7 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		{
 			if (PantsGear == NULL)
 			{
-				ShirtGear = InventoryItem;
+				PantsGear = InventoryItem;
 			}
 			else
 			{
@@ -434,7 +436,7 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		{
 			if (Backpack == NULL)
 			{
-				ShirtGear = InventoryItem;
+				//ShirtGear = InventoryItem;
 			}
 			else
 			{
@@ -448,15 +450,34 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		//InventoryItems.Add(InventoryItem->ItemInfo);
 		CurrentId += 0.1f;
 
+		InventoryItem->SetActorHiddenInGame(true);
+		InventoryItem->SetActorEnableCollision(false);
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + InventoryItem->ItemInfo.Name);
-		InventoryItem->Destroy();
 
-		return;
 	}
 	else if (Item)
 	{
-		Item->ItemInfo.ItemID += CurrentId;
-		InventoryItems.Add(Item->ItemInfo);
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Item");
+
+		if (ShirtGear != NULL)
+		{
+			Item->ItemInfo.ItemID += CurrentId;
+			ShirtGear->ItemInventory.Add(Item->ItemInfo);
+		}
+		else if (PantsGear != NULL)
+		{
+			Item->ItemInfo.ItemID += CurrentId;
+			PantsGear->ItemInventory.Add(Item->ItemInfo);
+		}
+		else if (Backpack != NULL)
+		{
+			Item->ItemInfo.ItemID += CurrentId;
+			Backpack->ItemInventory.Add(Item->ItemInfo);
+		}
+		else
+		{
+			return;
+		}
 
 		CurrentId += 0.1f;
 		//Item->ItemInfo.ItemID = InventoryItems.Find(Item->ItemInfo);

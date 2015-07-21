@@ -24,6 +24,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		float CurrentHoldingWeight;
+
+protected:
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+		//FItemDataStruct ItemInfo;
 	
 	
 };
