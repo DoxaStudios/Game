@@ -60,6 +60,9 @@ struct FItemDataStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	float AddThirst;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		AActor *ReferenceSelf;
+
 };
 
 UCLASS(Blueprintable)

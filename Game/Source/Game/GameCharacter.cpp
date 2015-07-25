@@ -46,7 +46,7 @@ AGameCharacter::AGameCharacter()
 	bIsInventoryOpen = false;
 
 	WalkSpeed = 300.0f;
-	RunSpeed = 450.0f;
+	RunSpeed = 650.0f;
 
 	Stamina = 100.0f;
 	MaxStamina = 100.0f;
@@ -86,8 +86,7 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	SprintFunc(DeltaTime);
 
-	//if (ShirtGear != NULL)
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Shirt Name: " + ShirtGear->ItemInfo.Name);
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(GetCharacterMovement()->MaxWalkSpeed));
 }
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -214,9 +213,9 @@ void AGameCharacter::ToggleView()
 
 void AGameCharacter::Sprint()
 {
-	if (Stamina == MaxStamina)
+	if (Stamina >= (MaxStamina - 40))
 	{
-		CurrentSpeed += 40;
+		CurrentSpeed += 100;
 	}
 	if (Stamina == 0.0f)
 	{
@@ -335,7 +334,7 @@ void AGameCharacter::SprintFunc(float DeltaTime)
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::SanitizeFloat(CurrentSpeed));
 		if (CurrentSpeed < RunSpeed)
 		{
-			CurrentSpeed += (DeltaTime * 15);
+			CurrentSpeed += (DeltaTime * 30);
 		}
 		else
 		{
