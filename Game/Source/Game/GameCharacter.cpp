@@ -86,6 +86,8 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	SprintFunc(DeltaTime);
 
+	FollowCamera->PostProcessSettings.ColorSaturation = FVector(Health / MaxHealth, Health / MaxHealth, Health / MaxHealth);
+
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(GetCharacterMovement()->MaxWalkSpeed));
 }
 

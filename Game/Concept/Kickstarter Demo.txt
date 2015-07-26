@@ -1,0 +1,13 @@
+Things for Kickstarter:
+1. Buildings of the TA truck stop
+2. Animations
+3. Props
+4. Basic Sound
+5. Basic AI
+6. Terrain
+7. Basic Texturing
+8. Cars
+
+SHOW OFF FEATURES
+
+
