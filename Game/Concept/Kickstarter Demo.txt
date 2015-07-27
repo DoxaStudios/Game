@@ -1,12 +1,72 @@
-Things for Kickstarter:
-1. Buildings of the TA truck stop
-2. Animations
-3. Props
-4. Basic Sound
-5. Basic AI
+Things for Kickstarter: 4 weeks from kickstarter at most
+1. Model buildings in the area of the TA truck stop(Armand)
+	a. Come up with names for TA stuff
+	b. Pretty detailed models but does not have to be optimised
+	c. Textured buildings
+2. Animations(Colton, Colby for the Programming)
+	a. First person basic animations
+	b. Third person basic animations
+	c. Basic reloading animations
+3. Props(Armand)
+	a. Basic props
+	b. Basic texturing
+	c. Props list
+		1. Water bottles
+		2. Canned food
+		3. Storage containers
+		4. Newspapers
+		5. Trash cans
+		6. Dumpster
+`		7. Pumps
+		8. Street lights
+		9. Road rails
+		10. Barrels
+		11. Fire pit
+		12. Attatchments
+		13. Trash bags
+		14. Semi Truck
+4. Basic Sound(Colton)
+	a. Basic sound
+	b. Royalty free sounds
+5. BASIC AI IS COMPLETE(Colton)
 6. Terrain
-7. Basic Texturing
-8. Cars
+	a. Terrain props(Armand)
+		1. Dead trees
+		2. Bushes
+		3. Some Trees
+		4. Basic foliage
+		5. Rocks
+7. Cars
+	a. Car functionality(Colby)
+		1. Driving
+		2. Passanger seats
+		3. Car Damage
+		4. Upgrading cars
+	b. Car props(Armand)
+		1. Future cars
+		2. Old cars
+8. Character clothing and cleanup
+	a. Clean up character
+	b. Add clothes
+
+1. Armand
+	Props(August 28, 2015)
+	TA Stop(August 28, 2015)
+	Car Props(August 14, 2015)
+	Character Design(August 14, 2015)
+	
+2. Colton
+	First Person Animations(July 31, 2015)
+	Third Person Animations(August 14, 2015)
+	Sound(July 31, 2015)
+	TerrainMat(July 29, 2015)
+	Research Substance Painter(August 31, 2015 6:00PM CST)
+
+3. Colby
+	Car Functionality(August 7, 2015)
+	Networking(Steamworks)(August 14, 2015)
+	UI Func(July 31, 2015)
+	
 
 SHOW OFF FEATURES
 
