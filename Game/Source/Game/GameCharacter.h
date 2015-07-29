@@ -21,6 +21,9 @@ class AGameCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class USkeletalMeshComponent* FirstPersonMesh;
 public:
 	AGameCharacter();
 
@@ -134,6 +137,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
 	float CurrentWeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
+		float SaturationLevel;
 
 	void HealthFunc(float DeltaTime);
 	void SprintFunc(float DeltaTime);

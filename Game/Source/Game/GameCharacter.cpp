@@ -86,7 +86,14 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	SprintFunc(DeltaTime);
 
-	FollowCamera->PostProcessSettings.ColorSaturation = FVector(Health / MaxHealth, Health / MaxHealth, Health / MaxHealth);
+	SaturationLevel = (Health / MaxHealth + 0.3f);
+	if (SaturationLevel > 1)
+	{
+		SaturationLevel = 1;
+	}
+
+
+	FollowCamera->PostProcessSettings.ColorSaturation = FVector(SaturationLevel, SaturationLevel, SaturationLevel);
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(GetCharacterMovement()->MaxWalkSpeed));
 }
@@ -256,6 +263,7 @@ bool AGameCharacter::EnableDisableKeys()
 		MyController->SetIgnoreLookInput(false);
 		MyController->SetInputMode(FInputModeGameOnly());
 		GetFocus();
+		FollowCamera->PostProcessSettings.bOverride_DepthOfFieldMethod = false;
 	}
 	else
 	{
@@ -265,6 +273,7 @@ bool AGameCharacter::EnableDisableKeys()
 		MyController->bEnableMouseOverEvents = true;
 		MyController->SetIgnoreLookInput(true);
 		MyController->SetInputMode(FInputModeGameAndUI());
+		FollowCamera->PostProcessSettings.bOverride_DepthOfFieldMethod = true;
 	}
 
 	return bIsInventoryOpen;
@@ -406,8 +415,10 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 	SavedContainer = ContainerItem;
 
 
+
 	if (InventoryItem)
 	{
+		InventoryItem->ItemInfo.ReferenceSelf = InventoryItem;
 		InventoryItem->ItemInfo.ItemID += CurrentId;
 		if (InventoryItem->ItemInfo.bIsShirt == true)
 		{
@@ -415,11 +426,11 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 			{
 				ShirtGear = InventoryItem;
 				//ShirtGear->ItemInfo.Name = InventoryItem->ItemInfo.Name;
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Added Shirt");
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Added Shirt");
 			}
 			else
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
 			}
 		}
 		else if (InventoryItem->ItemInfo.bIsPants == true)
@@ -446,19 +457,20 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
+			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
 		}
 		//InventoryItems.Add(InventoryItem->ItemInfo);
 		CurrentId += 0.1f;
 
 		InventoryItem->SetActorHiddenInGame(true);
 		InventoryItem->SetActorEnableCollision(false);
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + InventoryItem->ItemInfo.Name);
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + InventoryItem->ItemInfo.Name);
 
 	}
 	else if (Item)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Item");
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Item");
+		Item->ItemInfo.ReferenceSelf = Item;
 
 		if (ShirtGear != NULL)
 		{
@@ -484,16 +496,14 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		//Item->ItemInfo.ItemID = InventoryItems.Find(Item->ItemInfo);
 		//Item->ItemInfo.ItemID = CurrentId;
 
-		if (Item->ItemInfo.bIsConsumable)
-		{
-			Item->Destroy();
-		}
+		Item->SetActorHiddenInGame(true);
+		Item->SetActorEnableCollision(false);
 
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + Item->ItemInfo.Name);
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + Item->ItemInfo.Name);
 	}
 	else if (ContainerItem)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You opened a container");
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You opened a container");
 		OpenContainer();
 	}
 }
