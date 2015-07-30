@@ -73,6 +73,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float MaxStamina;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	bool isBleeding;
+
 
 	/*Inventory Data Structs and Variables*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
@@ -160,6 +163,8 @@ public:
 
 	void TacLookOn();
 	void TacLookOff();
+
+	void BleedingFunc(float DeltaTime);
 
 
 protected:

@@ -73,6 +73,8 @@ AGameCharacter::AGameCharacter()
 
 	CurrentWeight = 0;
 	MaxWeight = 300.0f;
+
+	isBleeding = false;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -86,6 +88,10 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	SprintFunc(DeltaTime);
 
+	if (isBleeding == true)
+	{
+		BleedingFunc(DeltaTime);
+	}
 	SaturationLevel = (Health / MaxHealth + 0.3f);
 	if (SaturationLevel > 1)
 	{
@@ -529,4 +535,17 @@ void AGameCharacter::PickupItemLineTrace()
 void AGameCharacter::Container()
 {
 
+}
+
+void AGameCharacter::BleedingFunc(float DeltaTime)
+{
+	if (Health < MaxHealth)
+	{
+		Health -= (DeltaTime * 2);
+	}
+	else if (Health < 0)
+	{
+		Health = 0;
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(Health));
 }
