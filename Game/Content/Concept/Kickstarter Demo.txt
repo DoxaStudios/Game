@@ -66,7 +66,14 @@ Things for Kickstarter: 4 weeks from kickstarter at most
 	Car Functionality(August 7, 2015)
 	Networking(Steamworks)(August 14, 2015)
 	UI Func(July 31, 2015)
-	
+
+4. Hans
+	First Person Animations(August 5, 2015)
+	Third Person Animations(August 21, 2015)
+
+5. Thomas	
+	Props(August 28, 2015)
+	Weapons(August 28, 2015)
 
 SHOW OFF FEATURES
 

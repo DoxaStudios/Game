@@ -8,6 +8,7 @@ public class GameTarget : TargetRules
 	public GameTarget(TargetInfo Target)
 	{
 		Type = TargetType.Game;
+        bUsesSteam = true;
 	}
 
 	//

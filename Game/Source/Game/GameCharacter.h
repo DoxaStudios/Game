@@ -116,6 +116,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Enable Disable Keys")
 	bool EnableDisableKeys();
 
+	UFUNCTION(BlueprintCallable, Category = "SetActor")
+	void Drop(AActor *Referenced);
+
 	void Interact();
 	void Pickup();
 	void Container();

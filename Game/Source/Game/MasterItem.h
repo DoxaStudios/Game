@@ -61,7 +61,7 @@ struct FItemDataStruct
 	float AddThirst;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		AActor *ReferenceSelf;
+		TSubclassOf<AActor> SpawnItem;
 
 };
 

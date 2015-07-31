@@ -230,7 +230,7 @@ void AGameCharacter::Sprint()
 {
 	if (Stamina >= (MaxStamina - 40))
 	{
-		CurrentSpeed += 100;
+		CurrentSpeed += 200;
 	}
 	if (Stamina == 0.0f)
 	{
@@ -424,7 +424,6 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 
 	if (InventoryItem)
 	{
-		InventoryItem->ItemInfo.ReferenceSelf = InventoryItem;
 		InventoryItem->ItemInfo.ItemID += CurrentId;
 		if (InventoryItem->ItemInfo.bIsShirt == true)
 		{
@@ -470,13 +469,14 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 
 		InventoryItem->SetActorHiddenInGame(true);
 		InventoryItem->SetActorEnableCollision(false);
+		//InventoryItem->SetActorHiddenInGame(false);
+		//InventoryItem->SetActorEnableCollision(true);
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + InventoryItem->ItemInfo.Name);
 
 	}
 	else if (Item)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Item");
-		Item->ItemInfo.ReferenceSelf = Item;
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Item")
 
 		if (ShirtGear != NULL)
 		{
@@ -502,8 +502,8 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		//Item->ItemInfo.ItemID = InventoryItems.Find(Item->ItemInfo);
 		//Item->ItemInfo.ItemID = CurrentId;
 
-		Item->SetActorHiddenInGame(true);
-		Item->SetActorEnableCollision(false);
+		Item->Destroy();
+		//Item->SetActor
 
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + Item->ItemInfo.Name);
 	}
@@ -548,4 +548,10 @@ void AGameCharacter::BleedingFunc(float DeltaTime)
 		Health = 0;
 	}
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(Health));
+}
+
+void AGameCharacter::Drop(AActor *Referenced)
+{
+	Referenced->SetActorHiddenInGame(false);
+	Referenced->SetActorEnableCollision(true);
 }
