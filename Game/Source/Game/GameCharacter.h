@@ -5,6 +5,8 @@
 #include "MasterItem.h"
 #include "Container.h"
 #include "InventoryItems.h"
+#include "Weapon.h"
+#include "WeaponProjectile.h"
 #include "GameCharacter.generated.h"
 
 #define TRACE_INVENTORY ECC_GameTraceChannel2

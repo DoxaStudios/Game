@@ -52,27 +52,42 @@ Things for Kickstarter: 4 weeks from kickstarter at most
 1. Armand
 	Props(August 28, 2015)
 	TA Stop(August 28, 2015)
-	Car Props(August 14, 2015)
-	Character Design(August 14, 2015)
+	Character Design(August 28, 2015)
 [Ak,Glock,Sniper50,FParms,Containers,Coyotepack,collected satilite image of arizona,]	
 2. Colton
-	Sound(July 31, 2015)
-	TerrainMat(July 29, 2015)
-	Research Substance Painter(August 31, 2015 6:00PM CST)
+	x Sound(July 31, 2015)
+	x TerrainMat(July 29, 2015)
+	x Research Substance Painter(August 31, 2015 6:00PM CST)
+	x Main Menu(August 7, 2015)
+	x Pause Menu()
+	x Random Spawner()
+	Make Item List(August 28, 2015)
+	Mess around with Item Icons()
+	x Sign System()
+	Add Weapons()
+	Foliage()
+	Add Sounds to game()
+	Building System(August 14, 2015)
+	Animation Programming(Whenever Animations are complete)
+	Learn particle system and make tracers and muzzle flash(August 14, 2015)
+	Make plot for Kickstarter(August 14, 2015)
 [Terrain,The InfectedAI,RandomSpawner,Health System,Damage System,Animation Play prep,Custom Textures,]
 3. Colby
 	Car Functionality(August 7, 2015)
-	Networking(Steamworks)(August 14, 2015)
-	UI Func(July 31, 2015)
+	Weapon System(August 4, 2015)
+	x Networking(Steamworks)(August 14, 2015)
+	x UI Func(July 31, 2015)
+	Animation Programming(Whenever Animations are complete)
 [UI,GunSystem,Inventory,]
 4. Hans
-	First Person Animations(August 5, 2015)
+	System Rig(August 5, 2015)
+	Basic First Person Animations(August 14, 2015)
 	Third Person Animations(August 21, 2015)
 [FP Animation prep,Rigging Arms]
 5. Thomas	
-	Props(August 28, 2015)
+	Car Props(August 14, 2015)
 	Weapons(August 28, 2015)
-[Semi Truck,]
+[Semi Truck, Hover Bike]
 SHOW OFF FEATURES
 
 

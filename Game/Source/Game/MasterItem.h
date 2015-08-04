@@ -62,6 +62,9 @@ struct FItemDataStruct
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		TSubclassOf<AActor> SpawnItem;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		AActor *Reference;
+	
 
 };
 

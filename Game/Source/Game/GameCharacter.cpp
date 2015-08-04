@@ -417,6 +417,7 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 {
 	AMasterItem *Item = Cast<AMasterItem>(Impact.GetActor());
 	AInventoryItems *InventoryItem = Cast<AInventoryItems>(Impact.GetActor());
+	AWeapon *Weapon = Cast<AWeapon>(Impact.GetActor());
 	AContainer *ContainerItem = Cast<AContainer>(Impact.GetActor());
 	SavedContainer = ContainerItem;
 
@@ -474,6 +475,36 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + InventoryItem->ItemInfo.Name);
 
 	}
+
+	else if (Weapon)
+	{
+		Weapon->ItemInfo.ItemID += CurrentId;
+		Weapon->ItemInfo.Reference = Weapon;
+
+		if (ShirtGear != NULL)
+		{
+			Item->ItemInfo.ItemID += CurrentId;
+			ShirtGear->ItemInventory.Add(Item->ItemInfo);
+		}
+		else if (PantsGear != NULL)
+		{
+			Item->ItemInfo.ItemID += CurrentId;
+			PantsGear->ItemInventory.Add(Item->ItemInfo);
+		}
+		else if (Backpack != NULL)
+		{
+			Item->ItemInfo.ItemID += CurrentId;
+			Backpack->ItemInventory.Add(Item->ItemInfo);
+		}
+		else
+		{
+			return;
+		}
+		Weapon->SetActorHiddenInGame(true);
+		Weapon->GetActorEnableCollision(false);
+
+	}
+
 	else if (Item)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Item")
