@@ -188,6 +188,7 @@ public:
 	void StopFire();
 
 	/** Reloads the Weapon */
+	UFUNCTION(BlueprintCallable, Category = Reload)
 	void ReloadAmmo();
 
 
@@ -214,6 +215,7 @@ public:
 	* Retrieves owner for this weapon for the MyPawn variable
 	* @param NewOwner  Only allows AGameCharacter Class type
 	*/
+	UFUNCTION(BlueprintCallable, Category = Weapon)
 	void SetOwningPawn(AGameCharacter *NewOwner);
 
 
@@ -252,6 +254,8 @@ public:
 	* @return  Returns the Weapon Sound to be played
 	*/
 	UAudioComponent* PlayWeaponSound(USoundCue *Sound);
+
+	//FORCEINLINE UBoxComponent *GetCollisionComp() { return CollisionComp; }
 
 protected:
 

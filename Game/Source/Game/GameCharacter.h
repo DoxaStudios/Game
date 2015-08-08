@@ -36,6 +36,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
 	void OpenContainer();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
+	void AttatchItem(AInventoryItems* InventoryItem);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Container")
 	AContainer *SavedContainer;
 

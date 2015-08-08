@@ -46,10 +46,10 @@ AGameCharacter::AGameCharacter()
 	bIsInventoryOpen = false;
 
 	WalkSpeed = 300.0f;
-	RunSpeed = 650.0f;
+	RunSpeed = 700.0f;
 
-	Stamina = 100.0f;
-	MaxStamina = 100.0f;
+	Stamina = 1000.0f;
+	MaxStamina = 1000.0f;
 
 	SprintLevel = 0;
 	MaxSprintLevel = 10;
@@ -101,7 +101,7 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	FollowCamera->PostProcessSettings.ColorSaturation = FVector(SaturationLevel, SaturationLevel, SaturationLevel);
 
-	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(GetCharacterMovement()->MaxWalkSpeed));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, GetCharacterMovement()->IsWalking() ? TEXT("true") : TEXT("false"));
 }
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -213,6 +213,7 @@ void AGameCharacter::ToggleView()
 		bIsFPS = false;
 		GetMesh()->bOwnerNoSee = false;
 		GetMesh()->MarkRenderStateDirty();
+		TacLookOn();
 	}
 	else
 	{
@@ -222,38 +223,33 @@ void AGameCharacter::ToggleView()
 		bIsFPS = true;
 		GetMesh()->bOwnerNoSee = true;
 		GetMesh()->MarkRenderStateDirty();
+		TacLookOff();
 	}
 
 }
 
 void AGameCharacter::Sprint()
 {
-	if (Stamina >= (MaxStamina - 40))
+	if (Stamina > 0)
 	{
-		CurrentSpeed += 200;
-	}
-	if (Stamina == 0.0f)
-	{
-		Walking();
-	}
-
-	if (Stamina < 0)
-	{
-		Stamina = 0;
-	}
-	else
-	{
-		bIsSprinting = true;
-		GetCharacterMovement()->MaxWalkSpeed = CurrentSpeed;
+		if (GetCharacterMovement()->IsWalking())
+		{
+			GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+			bIsSprinting = true;
+		}
+		else
+		{
+			GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+			bIsSprinting = false;
+		}
 	}
 
 }
 
 void AGameCharacter::Walking()
 {
-	bIsSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	CurrentSpeed = WalkSpeed;
+	bIsSprinting = false;
 }
 
 bool AGameCharacter::EnableDisableKeys()
@@ -349,15 +345,6 @@ void AGameCharacter::SprintFunc(float DeltaTime)
 	{
 		Stamina -= (DeltaTime * 5);
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::SanitizeFloat(CurrentSpeed));
-		if (CurrentSpeed < RunSpeed)
-		{
-			CurrentSpeed += (DeltaTime * 30);
-		}
-		else
-		{
-			CurrentSpeed = RunSpeed;
-		}
-		GetCharacterMovement()->MaxWalkSpeed = CurrentSpeed;
 	}
 	else
 	{
@@ -454,7 +441,10 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		{
 			if (Backpack == NULL)
 			{
-				//ShirtGear = InventoryItem;
+				Backpack = InventoryItem;
+				AttatchItem(InventoryItem);
+				CurrentId += 0.1f;
+				return;
 			}
 			else
 			{
@@ -500,8 +490,9 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		{
 			return;
 		}
+
 		Weapon->SetActorHiddenInGame(true);
-		Weapon->GetActorEnableCollision(false);
+		Weapon->SetActorEnableCollision(false);
 
 	}
 

@@ -85,7 +85,7 @@ void AWeapon::AttachtoPlayer()
 	if (MyPawn)
 	{
 		//detach (for debugging purposes)
-		DetachFromPlayer();
+		//DetachFromPlayer();
 
 		//if it's a right handed weapon
 		if (WeapConfig.bIsPrimary)
@@ -93,13 +93,19 @@ void AWeapon::AttachtoPlayer()
 			if (!WeapConfig.bIsTwoHanded)
 			{
 				USkeletalMeshComponent *Character = MyPawn->GetMesh();
+				SetActorHiddenInGame(false);
+				SetActorEnableCollision(true);
 				Mesh->SetHiddenInGame(false);
+				Mesh->Activate(true);
 				Mesh->AttachTo(Character, "WeapSocketR");
 			}
 			else
 			{
 				USkeletalMeshComponent *Character = MyPawn->GetMesh();
+				SetActorHiddenInGame(false);
+				SetActorEnableCollision(true);
 				Mesh->SetHiddenInGame(false);
+				Mesh->Activate(true);
 				Mesh->AttachTo(Character, "WeapSocketR");
 			}
 		}
@@ -240,16 +246,21 @@ void AWeapon::SetOwningPawn(AGameCharacter *NewOwner)
 
 void AWeapon::ReloadAmmo()
 {
-	if (CurrentAmmo > 0)
+	if (CurrentClip > 0)
 	{
 		if (CurrentAmmo < WeapConfig.MaxClip)
 		{
-			CurrentClip = CurrentAmmo;
+			CurrentAmmo = WeapConfig.MaxAmmo;
+			CurrentClip -= 1;
+		}
+		else if (CurrentAmmo == WeapConfig.MaxAmmo)
+		{
+			return;
 		}
 		else
 		{
-			CurrentAmmo -= WeapConfig.MaxClip;
-			CurrentClip += WeapConfig.MaxClip;
+			CurrentAmmo = WeapConfig.MaxAmmo;
+			CurrentClip -= 1;
 		}
 		PlayWeaponSound(ReloadStartSound);
 	}
@@ -320,7 +331,7 @@ void AWeapon::Instant_Fire()
 {
 	if (MyPawn)
 	{
-		if (CurrentClip > 0)
+		if (CurrentAmmo > 0)
 		{
 			// Get the camera transform
 			FVector CameraLoc;
@@ -337,7 +348,7 @@ void AWeapon::Instant_Fire()
 			const FHitResult Impact = WeaponTrace(StartTrace, EndTrace);
 
 			ProcessInstantHit(Impact, StartTrace, ShootDir, RandomSeed, CurrentSpread);
-			CurrentClip -= WeapConfig.ShotCost;
+			CurrentAmmo -= WeapConfig.ShotCost;
 
 			GetWorldTimerManager().SetTimer(this, &AWeapon::Instant_Fire, WeapConfig.TimeBetweenShots, false);
 			PlayWeaponSound(FireSound);
