@@ -37,6 +37,9 @@ AGameCharacter::AGameCharacter()
 	FollowCamera->AttachTo(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
 
+	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
+	FirstPersonMesh->AttachTo(Mesh);
+
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
@@ -213,6 +216,8 @@ void AGameCharacter::ToggleView()
 		bIsFPS = false;
 		GetMesh()->bOwnerNoSee = false;
 		GetMesh()->MarkRenderStateDirty();
+		FirstPersonMesh->bOwnerNoSee = true;
+		FirstPersonMesh->MarkRenderStateDirty();
 		TacLookOn();
 	}
 	else
@@ -223,6 +228,8 @@ void AGameCharacter::ToggleView()
 		bIsFPS = true;
 		GetMesh()->bOwnerNoSee = true;
 		GetMesh()->MarkRenderStateDirty();
+		FirstPersonMesh->bOwnerNoSee = false;
+		FirstPersonMesh->MarkRenderStateDirty();
 		TacLookOff();
 	}
 
@@ -490,7 +497,8 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		{
 			return;
 		}
-
+		class UBoxComponent *Collision = Weapon->GetCollisionComp();
+		Collision->SetSimulatePhysics(false);
 		Weapon->SetActorHiddenInGame(true);
 		Weapon->SetActorEnableCollision(false);
 

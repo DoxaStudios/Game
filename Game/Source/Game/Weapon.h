@@ -274,6 +274,7 @@ protected:
 	/** a pointer instance to store the Character class (PART OF THE FORWARD DECLARATOR) */
 	//AEnemy *MyEnemy;
 
+public:
 	FORCEINLINE USkeletalMeshComponent *GetMesh() { return Mesh; }
 
 	FORCEINLINE UBoxComponent *GetCollisionComp() { return CollisionComp; }

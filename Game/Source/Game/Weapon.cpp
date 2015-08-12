@@ -92,7 +92,8 @@ void AWeapon::AttachtoPlayer()
 		{
 			if (!WeapConfig.bIsTwoHanded)
 			{
-				USkeletalMeshComponent *Character = MyPawn->GetMesh();
+				USkeletalMeshComponent *Character = MyPawn->GetFPS();
+				//USkeletalMeshComponent *FirstPerson = MyPawn->GetFirstPerson();
 				SetActorHiddenInGame(false);
 				SetActorEnableCollision(true);
 				Mesh->SetHiddenInGame(false);
@@ -101,7 +102,8 @@ void AWeapon::AttachtoPlayer()
 			}
 			else
 			{
-				USkeletalMeshComponent *Character = MyPawn->GetMesh();
+				USkeletalMeshComponent *Character = MyPawn->GetFPS();
+				//USkeletalMeshComponent *FirstPerson = MyPawn->GetFirstPerson();
 				SetActorHiddenInGame(false);
 				SetActorEnableCollision(true);
 				Mesh->SetHiddenInGame(false);
