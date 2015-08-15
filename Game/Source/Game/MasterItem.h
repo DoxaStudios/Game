@@ -74,10 +74,6 @@ UCLASS(Blueprintable)
 class GAME_API AMasterItem : public AActor
 {
 	GENERATED_BODY()
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-		/** Skeletal Mesh of the weapon */
-	//class UStaticMeshComponent *Mesh;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -92,7 +88,6 @@ public:
 
 
 protected:
-
 
 	
 };

@@ -28,8 +28,9 @@ AGameCharacter::AGameCharacter()
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->AttachTo(RootComponent);
+	CameraBoom->AttachTo(Mesh,"head");
 	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
+	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
@@ -38,7 +39,7 @@ AGameCharacter::AGameCharacter()
 	FollowCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
 
 	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
-	FirstPersonMesh->AttachTo(Mesh);
+	FirstPersonMesh->AttachTo(GetCapsuleComponent());
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
@@ -71,7 +72,7 @@ AGameCharacter::AGameCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	ToggleView();
 
-	ItemSelected = 0;
+	//ItemSelected = 0;
 	CurrentId = 0;
 
 	CurrentWeight = 0;
@@ -135,6 +136,12 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 	//Sprinting
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &AGameCharacter::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &AGameCharacter::Walking);
+
+	InputComponent->BindAction("Crouch", IE_Pressed, this, &AGameCharacter::CrouchDown);
+	InputComponent->BindAction("Crouch", IE_Released, this, &AGameCharacter::CrouchUp);
+
+	InputComponent->BindAction("ADS", IE_Pressed, this, &AGameCharacter::ADSOn);
+	InputComponent->BindAction("ADS", IE_Released, this, &AGameCharacter::ADSOff);
 
 
 	//Debug Key
@@ -214,22 +221,23 @@ void AGameCharacter::ToggleView()
 		CameraBoom->TargetArmLength = 300.0f;
 		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 		bIsFPS = false;
-		GetMesh()->bOwnerNoSee = false;
-		GetMesh()->MarkRenderStateDirty();
-		FirstPersonMesh->bOwnerNoSee = true;
-		FirstPersonMesh->MarkRenderStateDirty();
+		//GetMesh()->bOwnerNoSee = false;
+		//GetMesh()->MarkRenderStateDirty();
+		//FirstPersonMesh->bOwnerNoSee = true;
+		//FirstPersonMesh->MarkRenderStateDirty();
 		TacLookOn();
 	}
 	else
 	{
 		//Setting Camera Boom
 		CameraBoom->TargetArmLength = 0.0f;
-		CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 60.0f));
+		CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		//CameraBoom->SetRelativeLocation(FVector(20.0f, 0.0f, 60.0f));
 		bIsFPS = true;
-		GetMesh()->bOwnerNoSee = true;
-		GetMesh()->MarkRenderStateDirty();
-		FirstPersonMesh->bOwnerNoSee = false;
-		FirstPersonMesh->MarkRenderStateDirty();
+		//GetMesh()->bOwnerNoSee = true;
+		//GetMesh()->MarkRenderStateDirty();
+		//FirstPersonMesh->bOwnerNoSee = false;
+		//FirstPersonMesh->MarkRenderStateDirty();
 		TacLookOff();
 	}
 
@@ -249,6 +257,7 @@ void AGameCharacter::Sprint()
 			GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 			bIsSprinting = false;
 		}
+
 	}
 
 }
@@ -577,11 +586,38 @@ void AGameCharacter::BleedingFunc(float DeltaTime)
 	{
 		Health = 0;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(Health));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(Health));
 }
 
 void AGameCharacter::Drop(AActor *Referenced)
 {
 	Referenced->SetActorHiddenInGame(false);
 	Referenced->SetActorEnableCollision(true);
+}
+
+void AGameCharacter::CrouchUp()
+{
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 98.0f);
+}
+
+void AGameCharacter::CrouchDown()
+{
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 68.0f);
+}
+
+void AGameCharacter::Death()
+{
+	GetMesh()->SetSimulatePhysics(true);
+	DeathScreen();
+	//GetCapsuleComponent()->InitCapsuleSize(1.0f, 1.0f);
+}
+
+void AGameCharacter::ADSOn()
+{
+	CameraBoom->SetRelativeLocation(FVector(4.0f, 10.0f, 6.5f));
+}
+
+void AGameCharacter::ADSOff()
+{
+	CameraBoom->SetRelativeLocation(FVector(0.0f, 5.0f, 0.0f));
 }

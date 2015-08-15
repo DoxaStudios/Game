@@ -92,7 +92,7 @@ void AWeapon::AttachtoPlayer()
 		{
 			if (!WeapConfig.bIsTwoHanded)
 			{
-				USkeletalMeshComponent *Character = MyPawn->GetFPS();
+				USkeletalMeshComponent *Character = MyPawn->GetMesh();
 				//USkeletalMeshComponent *FirstPerson = MyPawn->GetFirstPerson();
 				SetActorHiddenInGame(false);
 				SetActorEnableCollision(true);
@@ -102,7 +102,7 @@ void AWeapon::AttachtoPlayer()
 			}
 			else
 			{
-				USkeletalMeshComponent *Character = MyPawn->GetFPS();
+				USkeletalMeshComponent *Character = MyPawn->GetMesh();
 				//USkeletalMeshComponent *FirstPerson = MyPawn->GetFirstPerson();
 				SetActorHiddenInGame(false);
 				SetActorEnableCollision(true);
@@ -316,14 +316,20 @@ void AWeapon::ProcessInstantHit(const FHitResult &Impact, const FVector &Origin,
 		const FVector EndPoint = Impact.GetActor() ? Impact.ImpactPoint : EndTrace;
 		DrawDebugLine(this->GetWorld(), Origin, Impact.TraceEnd, FColor::Black, true, 10000, 10.f);
 
-		/*AEnemy *Enemy = Cast<AEnemy>(Impact.GetActor());
+		AGameCharacter *Enemy = Cast<AGameCharacter>(Impact.GetActor());
 		if (Enemy)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, "YOU HIT AN ENEMY!!");
-			Enemy->GetMesh()->SetSimulatePhysics(true);
-			Enemy->GetMesh()->AddImpulseAtLocation(EndPoint * 100, EndPoint);
+			//Enemy->GetMesh()->AddImpulseAtLocation(EndPoint * 100, EndPoint);
+			Enemy->Health -= 100;
+			Enemy->isBleeding = true;
+			//Enemy->GetMesh()->SetSimulatePhysics(true);
+			if (Enemy->Health <= 0)
+			{
+				Enemy->GetMesh()->SetSimulatePhysics(true);
+			}
 		}
-		*/
+		
 	}
 
 

@@ -6,6 +6,8 @@
 #include "Container.h"
 #include "InventoryItems.h"
 #include "Weapon.h"
+//#include "ISteamFriends.h"
+//#include "ISteamUtils.h"
 #include "WeaponProjectile.h"
 #include "GameCharacter.generated.h"
 
@@ -40,6 +42,12 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
 	void AttatchItem(AInventoryItems* InventoryItem);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
+	void DeathScreen();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
+	void UpdateHand();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Container")
 	AContainer *SavedContainer;
 
@@ -53,6 +61,9 @@ public:
 	//Sprinting Function
 	void Sprint();
 	void Walking();
+
+	void ADSOn();
+	void ADSOff();
 
 	USkeletalMeshComponent* GetFirstPerson();
 
@@ -116,9 +127,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	FItemDataStruct Hand;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
-	int32 ItemSelected;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+	int32 bleedingMultiplier;
+
+	UFUNCTION(BlueprintCallable, Category = "Enable Disable Keys")
+		void Death();
 
 	/*Inventory Functions*/
 	UFUNCTION(BlueprintCallable, Category = "Enable Disable Keys")
@@ -126,6 +139,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "SetActor")
 	void Drop(AActor *Referenced);
+
+	void CrouchDown();
+	void CrouchUp();
 
 	void Interact();
 	void Pickup();
@@ -225,5 +241,7 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	FORCEINLINE class USkeletalMeshComponent* GetFPS() const { return FirstPersonMesh; }
+
+	FORCEINLINE class USkeletalMeshComponent* GetMesh() const { return Mesh; }
 };
 

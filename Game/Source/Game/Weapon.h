@@ -173,6 +173,9 @@ public:
 	/** Current Ammo in clip */
 	int32 CurrentClip;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Config)
+	int32 DamageMultiplier;
+
 
 	/** bool to check if weapon wants to fire(for automatic and TimeBetweenShots enabling) */
 	bool bWantsToFire;
