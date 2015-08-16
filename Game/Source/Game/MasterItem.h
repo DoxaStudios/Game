@@ -19,7 +19,10 @@ struct FItemDataStruct
 	UTexture2D *Icon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	float ItemID;
+		float ItemID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float ItemCache;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	FString Description;

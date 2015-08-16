@@ -428,7 +428,7 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 
 	if (InventoryItem)
 	{
-		InventoryItem->ItemInfo.ItemID += CurrentId;
+		InventoryItem->ItemInfo.ItemCache += CurrentId;
 		if (InventoryItem->ItemInfo.bIsShirt == true)
 		{
 			if (ShirtGear == NULL)
@@ -484,23 +484,29 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 
 	else if (Weapon)
 	{
-		Weapon->ItemInfo.ItemID += CurrentId;
+		Weapon->ItemInfo.ItemCache += CurrentId;
 		Weapon->ItemInfo.Reference = Weapon;
 
 		if (ShirtGear != NULL)
 		{
-			Item->ItemInfo.ItemID += CurrentId;
+			Weapon->ItemInfo.ItemCache += CurrentId;
 			ShirtGear->ItemInventory.Add(Item->ItemInfo);
 		}
 		else if (PantsGear != NULL)
 		{
-			Item->ItemInfo.ItemID += CurrentId;
+			Weapon->ItemInfo.ItemCache += CurrentId;
 			PantsGear->ItemInventory.Add(Item->ItemInfo);
 		}
 		else if (Backpack != NULL)
 		{
-			Item->ItemInfo.ItemID += CurrentId;
+			Weapon->ItemInfo.ItemCache += CurrentId;
 			Backpack->ItemInventory.Add(Item->ItemInfo);
+		}
+		else if (Hand.ItemCache == NULL)
+		{
+			Weapon->ItemInfo.ItemCache += CurrentId;
+			Hand = Weapon->ItemInfo;
+			UpdateHand();
 		}
 		else
 		{
@@ -519,17 +525,17 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 
 		if (ShirtGear != NULL)
 		{
-			Item->ItemInfo.ItemID += CurrentId;
+			Item->ItemInfo.ItemCache += CurrentId;
 			ShirtGear->ItemInventory.Add(Item->ItemInfo);
 		}
 		else if (PantsGear != NULL)
 		{
-			Item->ItemInfo.ItemID += CurrentId;
+			Item->ItemInfo.ItemCache += CurrentId;
 			PantsGear->ItemInventory.Add(Item->ItemInfo);
 		}
 		else if (Backpack != NULL)
 		{
-			Item->ItemInfo.ItemID += CurrentId;
+			Item->ItemInfo.ItemCache += CurrentId;
 			Backpack->ItemInventory.Add(Item->ItemInfo);
 		}
 		else
@@ -538,8 +544,8 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		}
 
 		CurrentId += 0.1f;
-		//Item->ItemInfo.ItemID = InventoryItems.Find(Item->ItemInfo);
-		//Item->ItemInfo.ItemID = CurrentId;
+		//Item->ItemInfo.ItemCache = InventoryItems.Find(Item->ItemInfo);
+		//Item->ItemInfo.ItemCache = CurrentId;
 
 		Item->Destroy();
 		//Item->SetActor
@@ -619,5 +625,5 @@ void AGameCharacter::ADSOn()
 
 void AGameCharacter::ADSOff()
 {
-	CameraBoom->SetRelativeLocation(FVector(0.0f, 5.0f, 0.0f));
+	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 }
