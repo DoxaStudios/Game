@@ -8,6 +8,7 @@ public class GameEditorTarget : TargetRules
 	public GameEditorTarget(TargetInfo Target)
 	{
 		Type = TargetType.Editor;
+        bUsesSteam = true;
 	}
 
 	//
