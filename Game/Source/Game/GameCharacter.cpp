@@ -45,7 +45,6 @@ AGameCharacter::AGameCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
 	//Player Variables
-
 	bIsFPS = false;
 	bIsSprinting = false;
 	bIsInventoryOpen = false;
@@ -107,8 +106,6 @@ void AGameCharacter::Tick(float DeltaTime)
 	FollowCamera->PostProcessSettings.ColorSaturation = FVector(SaturationLevel, SaturationLevel, SaturationLevel);
 
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, GetCharacterMovement()->IsWalking() ? TEXT("true") : TEXT("false"));
-
-	TickFunc();
 }
 
 void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
@@ -560,8 +557,6 @@ void AGameCharacter::ProcessResults(const FHitResult &Impact)
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You opened a container");
 		OpenContainer();
 	}
-
-	BPInteract(Impact);
 }
 
 void AGameCharacter::PickupItemLineTrace()

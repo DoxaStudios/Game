@@ -40,9 +40,6 @@ public:
 	void OpenContainer();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
-		void BPInteract(const FHitResult &Impact);
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
 	void AttatchItem(AInventoryItems* InventoryItem);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
@@ -50,9 +47,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
 	void UpdateHand();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
-		void TickFunc();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Container")
 	AContainer *SavedContainer;
