@@ -55,8 +55,8 @@ void AWeapon::StopFire()
 		//turn bWantsToFire off
 		bWantsToFire = false;
 		//clear weapon fire timers
-		GetWorldTimerManager().ClearTimer(this, &AWeapon::Instant_Fire);
-		GetWorldTimerManager().ClearTimer(this, &AWeapon::ProjectileFire);
+		//GetWorldTimerManager().ClearTimer(this, &AWeapon::Instant_Fire);
+		//GetWorldTimerManager().ClearTimer(this, &AWeapon::ProjectileFire);
 	}
 }
 
@@ -358,7 +358,7 @@ void AWeapon::Instant_Fire()
 			ProcessInstantHit(Impact, StartTrace, ShootDir, RandomSeed, CurrentSpread);
 			CurrentAmmo -= WeapConfig.ShotCost;
 
-			GetWorldTimerManager().SetTimer(this, &AWeapon::Instant_Fire, WeapConfig.TimeBetweenShots, false);
+			//GetWorldTimerManager().SetTimer(this, &AWeapon::Instant_Fire, WeapConfig.TimeBetweenShots, false);
 			PlayWeaponSound(FireSound);
 		}
 		else
