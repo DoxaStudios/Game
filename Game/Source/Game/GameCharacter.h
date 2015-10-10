@@ -1,13 +1,10 @@
-// Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
 
 #include "GameFramework/Character.h"
-#include "MasterItem.h"
+#include "Item.h"
+#include "Items/Container_Item.h"
+#include "Items/Pickup_Item.h"
 #include "Container.h"
-#include "InventoryItems.h"
-#include "Weapon.h"
-//#include "ISteamFriends.h"
-//#include "ISteamUtils.h"
 #include "WeaponProjectile.h"
 #include "GameCharacter.generated.h"
 
@@ -17,7 +14,6 @@ UCLASS(config=Game)
 class AGameCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -29,170 +25,92 @@ class AGameCharacter : public ACharacter
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USkeletalMeshComponent* FirstPersonMesh;
+
+
+	/*Variables*/
 public:
-	AGameCharacter();
 
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseTurnRate;
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
-	void OpenContainer();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
-	void AttatchItem(AInventoryItems* InventoryItem);
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
-	void DeathScreen();
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "OpenContainer")
-	void UpdateHand();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Container")
-	AContainer *SavedContainer;
+		float BaseTurnRate;
 
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
-	float BaseLookUpRate;
+		float BaseLookUpRate;
 
-	//Toggle View Function that is public
-	void ToggleView();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+		float WalkSpeed;
 
-	//Sprinting Function
-	void Sprint();
-	void Walking();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+		float RunSpeed;
 
-	void ADSOn();
-	void ADSOff();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+		float CurrentSpeed;
 
-	USkeletalMeshComponent* GetFirstPerson();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Movement")
+		bool isBleeding;
 
-	UFUNCTION()
-	void Tick(float DeltaTime) override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		bool bIsInventoryOpen;
 
-	//Is FPS boolean
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+		float Stamina;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Life")
+		float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Life")
+		float Thirst;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Life")
+		float Hunger;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+		float MaxHealth;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+		float MaxThirst;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
+		float MaxHunger;
+
 	bool bIsFPS;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	float WalkSpeed;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	float RunSpeed;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	float CurrentSpeed;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	bool bIsSprinting;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	float Stamina;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float MaxStamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	bool isBleeding;
-
-
-	/*Inventory Data Structs and Variables*/
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
-	bool bIsInventoryOpen;
+		AContainer_Item *HeadGear;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
-	FItemDataStruct InventoryItem;
+		AContainer_Item *TopGear;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
-	TArray<FItemDataStruct> InventoryItems;
+		AContainer_Item *ChestGear;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-		FItemDataStruct HeadGear;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AContainer_Item *BottomGear;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-		AInventoryItems *ShirtGear;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AContainer_Item *ShoesGear;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-		AInventoryItems *ChestGear;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AContainer_Item *BackpackGear;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-		AInventoryItems *PantsGear;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AContainer_Item *GlovesGear;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-		FItemDataStruct ShoesGear;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
+		AItem *HandGear;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-		AInventoryItems *Backpack;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	FItemDataStruct Hand;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
 	int32 bleedingMultiplier;
 
-	UFUNCTION(BlueprintCallable, Category = "Enable Disable Keys")
-		void Death();
+	float SaturationLevel;
 
-	/*Inventory Functions*/
-	UFUNCTION(BlueprintCallable, Category = "Enable Disable Keys")
-	bool EnableDisableKeys();
+	float itemId;
 
-	UFUNCTION(BlueprintCallable, Category = "SetActor")
-	void Drop(AActor *Referenced);
-
-	void CrouchDown();
-	void CrouchUp();
-
-	void Interact();
-	void Pickup();
-	void Container();
-
-	//Life System
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
-	float Health;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
-	float Thirst;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
-	float Hunger;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
-	float MaxHealth;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
-	float MaxThirst;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
-	float MaxHunger;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
-	float MaxWeight;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Life")
-	float CurrentWeight;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Life")
-		float SaturationLevel;
-
-	void HealthFunc(float DeltaTime);
-	void SprintFunc(float DeltaTime);
-
-	//Level System
-	void SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	int32 SprintLevel;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Level")
-	int32 MaxSprintLevel;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
-	float CurrentId;
-
-	void Debug();
-
-
-	void TacLookOn();
-	void TacLookOff();
-
-	void BleedingFunc(float DeltaTime);
-
+	/*Functions*/
 
 protected:
 
@@ -214,12 +132,6 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
-	/** Handler for when a touch input begins. */
-	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
-
-	/** Handler for when a touch input stops. */
-	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
-
 	FHitResult PickupTrace(const FVector &TraceFrom, const FVector &TraceTo) const;
 
 	FHitResult ContainerTrace(const FVector &TraceFrom, const FVector &TraceTo) const;
@@ -227,6 +139,60 @@ protected:
 	void ProcessResults(const FHitResult &Impact);
 
 	void PickupItemLineTrace();
+
+public:
+		/*Constructor*/
+		AGameCharacter();
+
+		/*--TacMode--*/
+		void TacLookOn();
+		void TacLookOff();
+
+		/*--Life Functions--*/
+		void BleedingFunc(float DeltaTime);
+		void HealthFunc(float DeltaTime);
+		void SprintFunc(float DeltaTime);
+
+		/*--Movement--*/
+		void Sprint();
+		void Walking();
+
+		/*Toggle View*/
+		void ToggleView();
+
+		/*--ADS--*/
+		void ADSOn();
+		void ADSOff();
+
+		/*--Crouch--*/
+		void CrouchDown();
+		void CrouchUp();
+
+		/*Interact with objects*/
+		void Interact();
+
+		/*Pickup Items*/
+		void Pickup();
+
+		/*Open Container*/
+		void Container();
+
+		/*Debug*/
+		void Debug();
+
+		/*Blueprint Functions*/
+
+		/*Tick*/
+		UFUNCTION()
+			void Tick(float DeltaTime) override;
+
+		/*Death Function*/
+		UFUNCTION(BlueprintCallable, Category = "Enable Disable Keys")
+			void Death();
+
+		/*Enable Keys*/
+		UFUNCTION(BlueprintCallable, Category = "Enable Disable Keys")
+			bool EnableDisableKeys();
 
 protected:
 	// APawn interface

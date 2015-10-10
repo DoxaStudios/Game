@@ -3,7 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
-#include "MasterItem.h"
+//#include "MasterItem.h"
 #include "Container.generated.h"
 
 UCLASS()
@@ -14,9 +14,6 @@ class GAME_API AContainer : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AContainer();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-	TArray<FItemDataStruct> InventoryItems;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Name")
 	FString Name;

@@ -39,10 +39,7 @@ AGameCharacter::AGameCharacter()
 	FollowCamera->bUsePawnControlRotation = true; // Camera does not rotate relative to arm
 
 	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonMesh"));
-	FirstPersonMesh->AttachTo(GetCapsuleComponent());
-
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+	FirstPersonMesh->AttachTo(RootComponent);
 
 	//Player Variables
 	bIsFPS = false;
@@ -54,9 +51,6 @@ AGameCharacter::AGameCharacter()
 
 	Stamina = 1000.0f;
 	MaxStamina = 1000.0f;
-
-	SprintLevel = 0;
-	MaxSprintLevel = 10;
 
 	Health = 700.0f;
 	MaxHealth = 1000.0f;
@@ -73,10 +67,7 @@ AGameCharacter::AGameCharacter()
 	ToggleView();
 
 	//ItemSelected = 0;
-	CurrentId = 0;
-
-	CurrentWeight = 0;
-	MaxWeight = 300.0f;
+	//CurrentId = 0;
 
 	isBleeding = false;
 }
@@ -126,10 +117,6 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	InputComponent->BindAxis("LookUpRate", this, &AGameCharacter::LookUpAtRate);
 
-	// handle touch devices
-	InputComponent->BindTouch(IE_Pressed, this, &AGameCharacter::TouchStarted);
-	InputComponent->BindTouch(IE_Released, this, &AGameCharacter::TouchStopped);
-
 	//Toggle Player View
 	InputComponent->BindAction("ViewToggle", IE_Pressed, this, &AGameCharacter::ToggleView);
 
@@ -152,24 +139,6 @@ void AGameCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 
 	InputComponent->BindAction("Interact", IE_Pressed, this, &AGameCharacter::Interact);
 
-}
-
-
-void AGameCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	// jump, but only on the first touch
-	if (FingerIndex == ETouchIndex::Touch1)
-	{
-		Jump();
-	}
-}
-
-void AGameCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
-{
-	if (FingerIndex == ETouchIndex::Touch1)
-	{
-		StopJumping();
-	}
 }
 
 void AGameCharacter::TurnAtRate(float Rate)
@@ -297,11 +266,6 @@ bool AGameCharacter::EnableDisableKeys()
 	return bIsInventoryOpen;
 }
 
-void AGameCharacter::SprintLevelFunc(int32 SprintLevel, float MaxWalkSpeed)
-{
-	MaxWalkSpeed += SprintLevel * 5.0f;
-}
-
 void AGameCharacter::Debug()
 {
 	Thirst += 100;
@@ -374,7 +338,7 @@ void AGameCharacter::SprintFunc(float DeltaTime)
 void AGameCharacter::Interact()
 {
 	Pickup();
-	Container();
+	//Container();
 
 }
 
@@ -418,145 +382,36 @@ FHitResult AGameCharacter::ContainerTrace(const FVector &TraceFrom, const FVecto
 
 void AGameCharacter::ProcessResults(const FHitResult &Impact)
 {
-	AMasterItem *Item = Cast<AMasterItem>(Impact.GetActor());
-	AInventoryItems *InventoryItem = Cast<AInventoryItems>(Impact.GetActor());
-	AWeapon *Weapon = Cast<AWeapon>(Impact.GetActor());
-	AContainer *ContainerItem = Cast<AContainer>(Impact.GetActor());
-	SavedContainer = ContainerItem;
+	APickup_Item *PickupItem = Cast<APickup_Item>(Impact.GetActor());
+	AContainer_Item *ContainerItem = Cast<AContainer_Item>(Impact.GetActor());
 
-
-
-	if (InventoryItem)
+	if (ContainerItem)
 	{
-		InventoryItem->ItemInfo.ItemCache += CurrentId;
-		if (InventoryItem->ItemInfo.bIsShirt == true)
+		if (ContainerItem->ContainerItemType == EContainerItemType::E_Backpack)
 		{
-			if (ShirtGear == NULL)
+			
+			if (BackpackGear == NULL)
 			{
-				ShirtGear = InventoryItem;
-				//ShirtGear->ItemInfo.Name = InventoryItem->ItemInfo.Name;
-				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Added Shirt");
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Backpack: " + ContainerItem->ItemInfo.Name);
+				ContainerItem->SetOwningPawn(this);
+				ContainerItem->Pickup();
+				ContainerItem->ItemInfo.ItemID += itemId;
+				BackpackGear = ContainerItem;
 			}
-			else
-			{
-				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
-			}
+			
 		}
-		else if (InventoryItem->ItemInfo.bIsPants == true)
-		{
-			if (PantsGear == NULL)
-			{
-				PantsGear = InventoryItem;
-			}
-			else
-			{
-
-			}
-		}
-		else if (InventoryItem->ItemInfo.bIsBackpack == true)
-		{
-			if (Backpack == NULL)
-			{
-				Backpack = InventoryItem;
-				AttatchItem(InventoryItem);
-				CurrentId += 0.1f;
-				return;
-			}
-			else
-			{
-
-			}
-		}
-		else
-		{
-			//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
-		}
-		//InventoryItems.Add(InventoryItem->ItemInfo);
-		CurrentId += 0.1f;
-
-		InventoryItem->SetActorHiddenInGame(true);
-		InventoryItem->SetActorEnableCollision(false);
-		//InventoryItem->SetActorHiddenInGame(false);
-		//InventoryItem->SetActorEnableCollision(true);
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + InventoryItem->ItemInfo.Name);
-
 	}
-
-	else if (Weapon)
+	else if (PickupItem)
 	{
-		Weapon->ItemInfo.ItemCache += CurrentId;
-		Weapon->ItemInfo.Reference = Weapon;
-
-		if (ShirtGear != NULL)
+		if (BackpackGear != NULL)
 		{
-			Weapon->ItemInfo.ItemCache += CurrentId;
-			ShirtGear->ItemInventory.Add(Item->ItemInfo);
+			PickupItem->ItemInfo.ItemID += itemId;
+			BackpackGear->Items.Add(PickupItem);
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, "Item: " + PickupItem->ItemInfo.Name);
 		}
-		else if (PantsGear != NULL)
-		{
-			Weapon->ItemInfo.ItemCache += CurrentId;
-			PantsGear->ItemInventory.Add(Item->ItemInfo);
-		}
-		else if (Backpack != NULL)
-		{
-			Weapon->ItemInfo.ItemCache += CurrentId;
-			Backpack->ItemInventory.Add(Item->ItemInfo);
-		}
-		else if (Hand.ItemCache == NULL)
-		{
-			Weapon->ItemInfo.ItemCache += CurrentId;
-			Hand = Weapon->ItemInfo;
-			UpdateHand();
-		}
-		else
-		{
-			return;
-		}
-		class UBoxComponent *Collision = Weapon->GetCollisionComp();
-		Collision->SetSimulatePhysics(false);
-		Weapon->SetActorHiddenInGame(true);
-		Weapon->SetActorEnableCollision(false);
-
 	}
+	itemId += 0.1f;
 
-	else if (Item)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Item")
-
-		if (ShirtGear != NULL)
-		{
-			Item->ItemInfo.ItemCache += CurrentId;
-			ShirtGear->ItemInventory.Add(Item->ItemInfo);
-		}
-		else if (PantsGear != NULL)
-		{
-			Item->ItemInfo.ItemCache += CurrentId;
-			PantsGear->ItemInventory.Add(Item->ItemInfo);
-		}
-		else if (Backpack != NULL)
-		{
-			Item->ItemInfo.ItemCache += CurrentId;
-			Backpack->ItemInventory.Add(Item->ItemInfo);
-		}
-		else
-		{
-			return;
-		}
-
-		CurrentId += 0.1f;
-		//Item->ItemInfo.ItemCache = InventoryItems.Find(Item->ItemInfo);
-		//Item->ItemInfo.ItemCache = CurrentId;
-
-		Item->Destroy();
-		//Item->SetActor
-
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + Item->ItemInfo.Name);
-	}
-	else if (ContainerItem)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You opened a container");
-		OpenContainer();
-	}
 }
 
 void AGameCharacter::PickupItemLineTrace()
@@ -570,15 +425,10 @@ void AGameCharacter::PickupItemLineTrace()
 
 	const FHitResult Impact = PickupTrace(StartTrace, EndTrace);
 
-	//DrawDebugLine(this->GetWorld(), StartTrace, EndTrace, FColor::Black, true, 10000, 10.f);
+	DrawDebugLine(this->GetWorld(), StartTrace, EndTrace, FColor::Black, true, 10000, 10.f);
 
 
 	ProcessResults(Impact);
-
-}
-
-void AGameCharacter::Container()
-{
 
 }
 
@@ -595,12 +445,6 @@ void AGameCharacter::BleedingFunc(float DeltaTime)
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, FString::SanitizeFloat(Health));
 }
 
-void AGameCharacter::Drop(AActor *Referenced)
-{
-	Referenced->SetActorHiddenInGame(false);
-	Referenced->SetActorEnableCollision(true);
-}
-
 void AGameCharacter::CrouchUp()
 {
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 98.0f);
@@ -614,7 +458,7 @@ void AGameCharacter::CrouchDown()
 void AGameCharacter::Death()
 {
 	GetMesh()->SetSimulatePhysics(true);
-	DeathScreen();
+	//DeathScreen();
 	//GetCapsuleComponent()->InitCapsuleSize(1.0f, 1.0f);
 }
 
@@ -627,3 +471,144 @@ void AGameCharacter::ADSOff()
 {
 	CameraBoom->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 }
+/*
+//AMasterItem *Item = Cast<AMasterItem>(Impact.GetActor());
+AInventoryItems *InventoryItem = Cast<AInventoryItems>(Impact.GetActor());
+AWeapon *Weapon = Cast<AWeapon>(Impact.GetActor());
+AContainer *ContainerItem = Cast<AContainer>(Impact.GetActor());
+SavedContainer = ContainerItem;
+
+
+
+if (InventoryItem)
+{
+InventoryItem->ItemInfo.ItemCache += CurrentId;
+if (InventoryItem->ItemInfo.bIsShirt == true)
+{
+if (ShirtGear == NULL)
+{
+ShirtGear = InventoryItem;
+//ShirtGear->ItemInfo.Name = InventoryItem->ItemInfo.Name;
+//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Added Shirt");
+}
+else
+{
+//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
+}
+}
+else if (InventoryItem->ItemInfo.bIsPants == true)
+{
+if (PantsGear == NULL)
+{
+PantsGear = InventoryItem;
+}
+else
+{
+
+}
+}
+else if (InventoryItem->ItemInfo.bIsBackpack == true)
+{
+if (Backpack == NULL)
+{
+Backpack = InventoryItem;
+AttatchItem(InventoryItem);
+CurrentId += 0.1f;
+return;
+}
+else
+{
+
+}
+}
+else
+{
+//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Another Shirt in place");
+}
+//InventoryItems.Add(InventoryItem->ItemInfo);
+CurrentId += 0.1f;
+
+InventoryItem->SetActorHiddenInGame(true);
+InventoryItem->SetActorEnableCollision(false);
+//InventoryItem->SetActorHiddenInGame(false);
+//InventoryItem->SetActorEnableCollision(true);
+//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + InventoryItem->ItemInfo.Name);
+
+}
+
+else if (Weapon)
+{
+Weapon->ItemInfo.ItemCache += CurrentId;
+Weapon->ItemInfo.Reference = Weapon;
+
+if (ShirtGear != NULL)
+{
+Weapon->ItemInfo.ItemCache += CurrentId;
+ShirtGear->ItemInventory.Add(Item->ItemInfo);
+}
+else if (PantsGear != NULL)
+{
+Weapon->ItemInfo.ItemCache += CurrentId;
+PantsGear->ItemInventory.Add(Item->ItemInfo);
+}
+else if (Backpack != NULL)
+{
+Weapon->ItemInfo.ItemCache += CurrentId;
+Backpack->ItemInventory.Add(Item->ItemInfo);
+}
+else if (Hand.ItemCache == NULL)
+{
+Weapon->ItemInfo.ItemCache += CurrentId;
+Hand = Weapon->ItemInfo;
+UpdateHand();
+}
+else
+{
+return;
+}
+class UBoxComponent *Collision = Weapon->GetCollisionComp();
+Collision->SetSimulatePhysics(false);
+Weapon->SetActorHiddenInGame(true);
+Weapon->SetActorEnableCollision(false);
+
+}
+
+else if (Item)
+{
+//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "Item")
+
+if (ShirtGear != NULL)
+{
+Item->ItemInfo.ItemCache += CurrentId;
+ShirtGear->ItemInventory.Add(Item->ItemInfo);
+}
+else if (PantsGear != NULL)
+{
+Item->ItemInfo.ItemCache += CurrentId;
+PantsGear->ItemInventory.Add(Item->ItemInfo);
+}
+else if (Backpack != NULL)
+{
+Item->ItemInfo.ItemCache += CurrentId;
+Backpack->ItemInventory.Add(Item->ItemInfo);
+}
+else
+{
+return;
+}
+
+CurrentId += 0.1f;
+//Item->ItemInfo.ItemCache = InventoryItems.Find(Item->ItemInfo);
+//Item->ItemInfo.ItemCache = CurrentId;
+
+Item->Destroy();
+//Item->SetActor
+
+//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You just picked up a " + Item->ItemInfo.Name);
+}
+else if (ContainerItem)
+{
+//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Black, "You opened a container");
+OpenContainer();
+}
+*/
